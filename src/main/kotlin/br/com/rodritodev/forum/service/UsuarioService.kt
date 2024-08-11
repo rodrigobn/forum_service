@@ -3,6 +3,9 @@ package br.com.rodritodev.forum.service
 import br.com.rodritodev.forum.model.Usuario
 import org.springframework.stereotype.Service
 
+/**
+ * Serviço de usuários do fórum
+ */
 @Service
 class UsuarioService(var usuarios: List<Usuario>) {
 
@@ -21,6 +24,11 @@ class UsuarioService(var usuarios: List<Usuario>) {
         )
     }
 
+    /**
+     * Busca um usuário pelo id
+     * @param id Id do usuário
+     * @return Usuário encontrado
+     */
     fun buscarPorId(id: Long): Usuario {
         usuarios.forEach {
             if (it.id == id) {

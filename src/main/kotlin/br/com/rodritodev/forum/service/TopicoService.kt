@@ -1,9 +1,13 @@
 package br.com.rodritodev.forum.service
 
-import br.com.rodritodev.forum.dto.NovoTopicoDto
+import br.com.rodritodev.forum.dto.NovoTopicoForm
+import br.com.rodritodev.forum.dto.TopicoView
 import br.com.rodritodev.forum.model.*
 import org.springframework.stereotype.Service
 
+/**
+ * Serviço de tópicos do fórum
+ */
 @Service
 class TopicoService(
     private var topicos: List<Topico> = ArrayList(),
@@ -15,8 +19,16 @@ class TopicoService(
      * Retorna uma lista de tópicos
      * @return Lista de tópicos
      */
-    fun listar(): List<Topico> {
-        return topicos
+    fun listar(): List<TopicoView> {
+        return topicos.stream().map { topico ->
+            TopicoView(
+                id = topico.id,
+                titulo = topico.titulo,
+                mensagem = topico.mensagem,
+                status = topico.status,
+                dataCriacao = topico.dataCriacao,
+            )
+        }.toList()
     }
 
     /**
@@ -24,11 +36,16 @@ class TopicoService(
      * @param id Id do tópico
      * @return Tópico encontrado
      */
-    fun buscarPorId(id: Long): Topico {
-        topicos.forEach {
-            if (it.id == id) {
-                return it
-            }
+    fun buscarPorId(id: Long): TopicoView {
+        val topico = topicos.find { it.id == id }
+        if (topico != null) {
+            return TopicoView(
+                id = topico.id,
+                titulo = topico.titulo,
+                mensagem = topico.mensagem,
+                status = topico.status,
+                dataCriacao = topico.dataCriacao,
+            )
         }
         throw IllegalArgumentException("Tópico ($id) não encontrado")
     }
@@ -37,7 +54,7 @@ class TopicoService(
      * Cadastra um novo tópico
      * @param dto Dados do tópico
      */
-    fun cadastrar(dto: NovoTopicoDto) {
+    fun cadastrar(dto: NovoTopicoForm) {
         topicos = topicos.plus(
             Topico(
                 id = topicos.size.toLong() + 1,

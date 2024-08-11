@@ -3,6 +3,9 @@ package br.com.rodritodev.forum.service
 import br.com.rodritodev.forum.model.Curso
 import org.springframework.stereotype.Service
 
+/**
+ * Serviço de cursos do fórum
+ */
 @Service
 class CursoService(var cursos: List<Curso>) {
 
@@ -26,6 +29,11 @@ class CursoService(var cursos: List<Curso>) {
         )
     }
 
+    /**
+     * Busca um curso pelo id
+     * @param id Id do curso
+     * @return Curso encontrado
+     */
     fun buscarPorId(id: Long): Curso {
         cursos.forEach {
             if (it.id == id) {

@@ -2,6 +2,9 @@ package br.com.rodritodev.forum.model
 
 import java.time.LocalDateTime
 
+/**
+ * Modelo de tópico do fórum
+ */
 data class Topico(
     val id: Long? = null,
     val titulo: String,
