@@ -2,6 +2,8 @@ package br.com.rodritodev.forum.service
 
 import br.com.rodritodev.forum.dto.NovoTopicoForm
 import br.com.rodritodev.forum.dto.TopicoView
+import br.com.rodritodev.forum.mapper.TopicoFormMapper
+import br.com.rodritodev.forum.mapper.TopicoViewMapper
 import br.com.rodritodev.forum.model.*
 import org.springframework.stereotype.Service
 
@@ -11,23 +13,16 @@ import org.springframework.stereotype.Service
 @Service
 class TopicoService(
     private var topicos: List<Topico> = ArrayList(),
-    private val cursoService: CursoService,
-    private val usuarioService: UsuarioService,
+    private val topicoViewMapper: TopicoViewMapper,
+    private val topicoFormMapper: TopicoFormMapper,
 ) {
-
     /**
      * Retorna uma lista de tópicos
      * @return Lista de tópicos
      */
     fun listar(): List<TopicoView> {
         return topicos.stream().map { topico ->
-            TopicoView(
-                id = topico.id,
-                titulo = topico.titulo,
-                mensagem = topico.mensagem,
-                status = topico.status,
-                dataCriacao = topico.dataCriacao,
-            )
+            topicoViewMapper.map(topico)
         }.toList()
     }
 
@@ -39,13 +34,7 @@ class TopicoService(
     fun buscarPorId(id: Long): TopicoView {
         val topico = topicos.find { it.id == id }
         if (topico != null) {
-            return TopicoView(
-                id = topico.id,
-                titulo = topico.titulo,
-                mensagem = topico.mensagem,
-                status = topico.status,
-                dataCriacao = topico.dataCriacao,
-            )
+            return topicoViewMapper.map(topico)
         }
         throw IllegalArgumentException("Tópico ($id) não encontrado")
     }
@@ -55,14 +44,8 @@ class TopicoService(
      * @param dto Dados do tópico
      */
     fun cadastrar(dto: NovoTopicoForm) {
-        topicos = topicos.plus(
-            Topico(
-                id = topicos.size.toLong() + 1,
-                titulo = dto.titulo,
-                mensagem = dto.mensagem,
-                curso = cursoService.buscarPorId(dto.idCurso),
-                autor = usuarioService.buscarPorId(dto.idAutor),
-            )
-        )
+        val topico = topicoFormMapper.map(dto)
+        topico.id = topicos.size.toLong() + 1
+        topicos = topicos.plus(topico)
     }
 }

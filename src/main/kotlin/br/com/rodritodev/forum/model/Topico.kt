@@ -6,7 +6,7 @@ import java.time.LocalDateTime
  * Modelo de tópico do fórum
  */
 data class Topico(
-    val id: Long? = null,
+    var id: Long? = null,
     val titulo: String,
     val mensagem: String,
     val dataCriacao: LocalDateTime = LocalDateTime.now(),

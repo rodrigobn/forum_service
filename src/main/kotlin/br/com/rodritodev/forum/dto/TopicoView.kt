@@ -5,6 +5,8 @@ import java.time.LocalDateTime
 
 /**
  * Visualização de um tópico do fórum
+ *
+ * View é um dto que sai da aplicação
  */
 data class TopicoView(
     val id: Long?,
