@@ -3,6 +3,8 @@ package br.com.rodritodev.forum.controller
 import br.com.rodritodev.forum.dto.NovoTopicoForm
 import br.com.rodritodev.forum.dto.TopicoView
 import br.com.rodritodev.forum.service.TopicoService
+import jakarta.validation.Valid
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -41,7 +43,7 @@ class TopicoController(private val topicoService: TopicoService) {
      * @param dto Dados do tópico
      */
     @PostMapping
-    fun cadastrar(@RequestBody dto: NovoTopicoForm) {
+    fun cadastrar(@RequestBody @Valid dto: NovoTopicoForm) {
         topicoService.cadastrar(dto)
     }
 }
