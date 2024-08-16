@@ -11,6 +11,12 @@ import org.springframework.stereotype.Component
  */
 @Component
 class TopicoViewMapper: Mapper<Topico, TopicoView> {
+
+    /**
+     * Mapeia um Topico para um TopicoView
+     * @param t Tópico
+     * @return Visualização de tópico mapeada
+     */
     override fun map(t: Topico): TopicoView {
         return TopicoView(
             id = t.id,

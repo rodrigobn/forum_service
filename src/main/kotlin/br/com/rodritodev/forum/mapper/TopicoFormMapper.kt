@@ -16,6 +16,12 @@ class TopicoFormMapper(
     private val cursoService: CursoService,
     private val usuarioService: UsuarioService,
 ) : Mapper<NovoTopicoForm, Topico> {
+
+    /**
+     * Mapeia um NovoTopicoForm para um Topico
+     * @param t Formulário de tópico
+     * @return Tópico mapeado
+     */
     override fun map(t: NovoTopicoForm): Topico {
         return Topico(
             titulo = t.titulo,
