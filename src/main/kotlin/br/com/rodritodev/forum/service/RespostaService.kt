@@ -99,42 +99,50 @@ class RespostaService(
 
     /**
      * Marca uma resposta como solução
-     * @param id Id da resposta
+     * @param idTopico Id do tópico
+     * @param idResposta Id da resposta
      * @return Resposta marcada como solução
      */
-    fun marcarComoSolucao(id: Long): RespostaView? {
-        val resposta = topicoService.buscarPorId(id).respostas.find { it.solucao }
+    fun marcarComoSolucao(idTopico: Long, idResposta: Long): RespostaView? {
+        val topicoView = topicoService.buscarPorId(idTopico)
 
-        if (resposta != null) {
-            throw IllegalStateException("Tópico já possui uma resposta marcada como solução")
+        if (topicoView.status == StatusTopico.FECHADO) {
+            throw IllegalStateException("Tópico não pode receber respostas pois está fechado")
         }
 
-        val respostaView = topicoService.buscarPorId(id).respostas.find { it.id == id }
+        val resposta = topicoView.respostas.find { it.id == idResposta }
 
-        if (respostaView == null) {
-            throw IllegalArgumentException("Resposta ($id) não encontrada")
+        if (resposta == null) {
+            throw IllegalArgumentException("Resposta ($idResposta) não encontrada")
         }
 
-        respostaView.solucao = true
+        resposta.solucao = true
 
-        return respostaView
+        return resposta
     }
 
     /**
      * Remove a marcação de solução de uma resposta
-     * @param id Id da resposta
+     * @param idTopico Id do tópico
+     * @param idResposta Id da resposta
      * @return Resposta com a marcação de solução removida
      */
-    fun removerSolucao(id: Long): RespostaView? {
-        val respostaView = topicoService.buscarPorId(id).respostas.find { it.id == id }
+    fun removerSolucao(idTopico: Long, idResposta: Long): RespostaView? {
+        val topicoView = topicoService.buscarPorId(idTopico)
 
-        if (respostaView == null) {
-            throw IllegalArgumentException("Resposta ($id) não encontrada")
+        if (topicoView.status == StatusTopico.FECHADO) {
+            throw IllegalStateException("Tópico não pode receber respostas pois está fechado")
         }
 
-        respostaView.solucao = false
+        val resposta = topicoView.respostas.find { it.id == idResposta }
 
-        return respostaView
+        if (resposta == null) {
+            throw IllegalArgumentException("Resposta ($idResposta) não encontrada")
+        }
+
+        resposta.solucao = false
+
+        return resposta
     }
 
     /**

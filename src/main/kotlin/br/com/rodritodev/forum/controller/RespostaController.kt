@@ -56,25 +56,25 @@ class RespostaController(private val respostaService: RespostaService) {
 
     /**
      * Marca uma resposta como solução
-     * @param id Id da resposta
-     * @return Resposta marcada como solução
+     * @param idTopico Id do tópico
+     * @param idResposta Id da resposta
+     * @return Resposta com a marcação de solução
      */
-    @PutMapping("/{id}/solucao")
-    fun marcarComoSolucao(@PathVariable id: Long): ResponseEntity<RespostaView> {
-        // TODO melhorar a busca da resposta
-        val respostaView = respostaService.marcarComoSolucao(id)
+    @PutMapping("topico/{idTopico}/solucao/{idResposta}")
+    fun marcarComoSolucao(@PathVariable idTopico: Long, @PathVariable idResposta: Long): ResponseEntity<RespostaView> {
+        val respostaView = respostaService.marcarComoSolucao(idTopico, idResposta)
         return ResponseEntity.ok(respostaView)
     }
 
     /**
      * Remove a marcação de solução de uma resposta
-     * @param id Id da resposta
+     * @param idTopico Id do tópico
+     * @param idResposta Id da resposta
      * @return Resposta com a marcação de solução removida
      */
-    @DeleteMapping("/{id}/solucao")
-    fun removerSolucao(@PathVariable id: Long): ResponseEntity<RespostaView> {
-        // TODO melhorar a busca da resposta
-        val respostaView = respostaService.removerSolucao(id)
+    @DeleteMapping("topico/{idTopico}/remove/{idResposta}")
+    fun removerSolucao(@PathVariable idTopico: Long, @PathVariable idResposta: Long): ResponseEntity<RespostaView> {
+        val respostaView = respostaService.removerSolucao(idTopico, idResposta)
         return ResponseEntity.ok(respostaView)
     }
 
