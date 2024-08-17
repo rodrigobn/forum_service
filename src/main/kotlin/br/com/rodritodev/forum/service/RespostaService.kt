@@ -1,53 +1,66 @@
 package br.com.rodritodev.forum.service
 
-import br.com.rodritodev.forum.model.*
+import br.com.rodritodev.forum.dto.AtualizacaoTopicoForm
+import br.com.rodritodev.forum.dto.NovaRespostaForm
+import br.com.rodritodev.forum.dto.RespostaView
+import br.com.rodritodev.forum.mapper.RespostaFormMapper
+import br.com.rodritodev.forum.mapper.RespostaViewMapper
+import br.com.rodritodev.forum.model.Resposta
+import br.com.rodritodev.forum.model.StatusTopico
 import org.springframework.stereotype.Service
 
+/**
+ * Serviço de respostas dos tópicos do fórum
+ */
 @Service
 class RespostaService(
-    private var respostas: List<Resposta>,
+    private var topicoService: TopicoService,
+    private var usuarioService: UsuarioService,
+    private val respostaFormMapper: RespostaFormMapper,
+    private val respostaViewMapper: RespostaViewMapper,
 ) {
-    init {
-        val curso = Curso(
-            id = 1,
-            nome = "Kotlin",
-            categoria = "Programacao"
-        )
-        val autor = Usuario(
-            id = 1,
-            nome = "Ana da Silva",
-            email = "ana@email.com"
-        )
-        val topico = Topico(
-            id = 1,
-            titulo = "Duvida Kotlin",
-            mensagem = "Variaveis no Kotlin",
-            curso = curso,
-            autor = autor
-        )
+    /**
+     * Lista as respostas de um tópico
+     * @param idTopico Id do tópico
+     * @return Lista de respostas
+     */
+    fun listar(idTopico: Long): List<RespostaView> {
+        val respostas = topicoService.buscarPorId(idTopico).respostas
 
-        val resposta = Resposta(
-            id = 1,
-            mensagem = "Resposta 1",
-            usuario = autor,
-            topico = topico,
-            solucao = false
-        )
+        if (respostas.isEmpty()) {
+            throw IllegalArgumentException("Tópico ($idTopico) não possui respostas")
+        }
 
-        val resposta2 = Resposta(
-            id = 2,
-            mensagem = "Resposta 2",
-            usuario = autor,
-            topico = topico,
-            solucao = false
-        )
-
-        respostas = listOf(resposta, resposta2)
+        return respostas
     }
 
-    fun listar(idTopico: Long): List<Resposta> {
-        return respostas.stream().filter { r ->
-            r.topico.id == idTopico
-        }.toList()
+    /**
+     * Cadastra uma nova resposta
+     * @param novaRespostaForm Dados da resposta
+     * @return Resposta cadastrada
+     */
+    fun cadastrar(novaRespostaForm: NovaRespostaForm): RespostaView {
+        val topicoView = topicoService.buscarPorId(novaRespostaForm.idTopico)
+
+        if (topicoView.status == StatusTopico.FECHADO) {
+            throw IllegalStateException("Tópico não pode receber respostas pois está fechado")
+        }
+        val resposta = respostaFormMapper.map(novaRespostaForm)
+
+        val autor = usuarioService.buscarPorId(novaRespostaForm.idAutor)
+        resposta.id = topicoView.respostas.size.toLong() + 1
+        resposta.usuario = autor
+        resposta.topico = topicoView
+        topicoView.respostas = topicoView.respostas.plus(respostaViewMapper.map(resposta))
+
+        topicoService.atualizar(
+            AtualizacaoTopicoForm(
+                id = topicoView.id!!,
+                titulo = topicoView.titulo,
+                mensagem = topicoView.mensagem,
+                respostas = topicoView.respostas
+            )
+        )
+        return respostaViewMapper.map(resposta)
     }
 }

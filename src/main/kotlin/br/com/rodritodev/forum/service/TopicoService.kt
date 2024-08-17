@@ -70,7 +70,7 @@ class TopicoService(
             curso = topico.curso,
             autor = topico.autor,
             status = topico.status,
-            resposta = topico.resposta,
+            resposta = dto.respostas,
         )
 
         topicos = topicos.minus(topico).plus(topicoAtualizado)

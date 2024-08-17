@@ -18,8 +18,8 @@ class UsuarioService(var usuarios: List<Usuario>) {
             ),
             Usuario(
                 id = 2,
-                nome = "João",
-                email = "joao@mail.com",
+                nome = "Aline",
+                email = "aline@mail.com",
             ),
         )
     }

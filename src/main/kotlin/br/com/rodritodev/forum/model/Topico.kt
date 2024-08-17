@@ -1,5 +1,6 @@
 package br.com.rodritodev.forum.model
 
+import br.com.rodritodev.forum.dto.RespostaView
 import java.time.LocalDateTime
 
 /**
@@ -13,5 +14,5 @@ data class Topico(
     val curso: Curso,
     val autor: Usuario,
     val status: StatusTopico = StatusTopico.NAO_RESPONDIDO,
-    val resposta: List<Resposta> = ArrayList(),
+    val resposta: List<RespostaView> = ArrayList(),
 )
