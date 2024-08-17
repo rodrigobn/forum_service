@@ -9,8 +9,8 @@ import java.time.LocalDateTime
  */
 data class RespostaView(
     val id: Long?,
-    val mensagem: String,
+    var mensagem: String,
     val dataCriacao: LocalDateTime,
     val nomeAutor: String,
-    val solucao: Boolean,
+    var solucao: Boolean,
 )
