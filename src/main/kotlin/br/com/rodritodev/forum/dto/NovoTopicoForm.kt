@@ -10,8 +10,17 @@ import jakarta.validation.constraints.Size
  * Form é um dto que chega na aplicação
  */
 data class NovoTopicoForm(
-    @field:NotEmpty @Size(min = 5, max = 50) val titulo: String,
-    @field:NotEmpty @Size(min = 5, max = 150) val mensagem: String,
-    @field:NotNull val idCurso: Long,
-    @field:NotNull val idAutor: Long,
+    @field:NotEmpty(message = "O título não pode ser em branco")
+    @field:Size(min = 5, max = 50, message = "O título deve ter entre 5 e 50 caracteres")
+    val titulo: String,
+
+    @field:NotEmpty(message = "A mensagem não pode ser em branco")
+    @field:Size(min = 5, max = 150, message = "A mensagem deve ter entre 5 e 150 caracteres")
+    val mensagem: String,
+
+    @field:NotNull val
+    idCurso: Long,
+
+    @field:NotNull val
+    idAutor: Long,
 )

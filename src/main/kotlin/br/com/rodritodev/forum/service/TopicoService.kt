@@ -3,6 +3,7 @@ package br.com.rodritodev.forum.service
 import br.com.rodritodev.forum.dto.AtualizacaoTopicoForm
 import br.com.rodritodev.forum.dto.NovoTopicoForm
 import br.com.rodritodev.forum.dto.TopicoView
+import br.com.rodritodev.forum.exception.NotFoundException
 import br.com.rodritodev.forum.mapper.TopicoFormMapper
 import br.com.rodritodev.forum.mapper.TopicoViewMapper
 import br.com.rodritodev.forum.model.Topico
@@ -34,10 +35,10 @@ class TopicoService(
      */
     fun buscarPorId(id: Long): TopicoView {
         val topico = topicos.find { it.id == id }
-        if (topico != null) {
-            return topicoViewMapper.map(topico)
+        if (topico == null) {
+            throw NotFoundException("Tópico não encontrado")
         }
-        throw IllegalArgumentException("Tópico ($id) não encontrado")
+        return topicoViewMapper.map(topico)
     }
 
     /**
@@ -55,11 +56,11 @@ class TopicoService(
      * Atualiza um tópico
      * @param dto Dados do tópico
      */
-    fun atualizar(dto: AtualizacaoTopicoForm): TopicoView{
+    fun atualizar(dto: AtualizacaoTopicoForm): TopicoView {
         val topico = topicos.find { it.id == dto.id }
 
         if (topico == null) {
-            throw IllegalArgumentException("Tópico (${dto.id}) não encontrado")
+            throw NotFoundException("Tópico não encontrado")
         }
 
         val topicoAtualizado = Topico(
@@ -86,7 +87,7 @@ class TopicoService(
         val topico = topicos.find { it.id == id }
 
         if (topico == null) {
-            throw IllegalArgumentException("Tópico ($id) não encontrado")
+            throw NotFoundException("Tópico não encontrado")
         }
 
         topicos = topicos.minus(topico)
