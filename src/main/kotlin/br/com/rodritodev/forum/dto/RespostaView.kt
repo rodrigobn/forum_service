@@ -8,9 +8,10 @@ import java.time.LocalDateTime
  * View é um dto que sai da aplicação
  */
 data class RespostaView(
-    val id: Long?,
+    val id: Long,
     var mensagem: String,
     val dataCriacao: LocalDateTime,
     val nomeAutor: String,
+    var tituloTopico: String,
     var solucao: Boolean,
 )

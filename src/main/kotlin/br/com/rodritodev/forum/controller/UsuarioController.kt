@@ -1,0 +1,74 @@
+package br.com.rodritodev.forum.controller
+
+import br.com.rodritodev.forum.dto.AtualizacaoUsuarioForm
+import br.com.rodritodev.forum.dto.NovoUsuarioForm
+import br.com.rodritodev.forum.dto.UsuarioView
+import br.com.rodritodev.forum.model.Usuario
+import br.com.rodritodev.forum.service.UsuarioService
+import jakarta.transaction.Transactional
+import jakarta.validation.Valid
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.util.UriComponentsBuilder
+
+@RestController
+@RequestMapping("/usuarios")
+class UsuarioController(private val usuarioService: UsuarioService) {
+
+    /**
+     * Lista todos os usuários
+     * @return Lista de usuários
+     */
+    @GetMapping
+    fun listar(): List<UsuarioView> {
+        return usuarioService.listar()
+    }
+
+    /**
+     * Busca um usuário pelo id
+     * @param id Id do usuário
+     * @return Usuário encontrado
+     */
+    @GetMapping("/{id}")
+    fun buscarPorId(@PathVariable id: Long): Usuario {
+        return usuarioService.buscarPorId(id)
+    }
+
+    /**
+     * Cadastra um novo usuário
+     * @param usuario Usuário a ser cadastrado
+     * @return Usuário cadastrado
+     */
+    @PostMapping
+    @Transactional
+    fun cadastrar(
+        @RequestBody @Valid dto: NovoUsuarioForm,
+        uriBuilder: UriComponentsBuilder,
+    ): ResponseEntity<UsuarioView> {
+        val usuario = usuarioService.cadastrar(dto)
+        val uri = uriBuilder.path("/usuarios/${usuario.id}").build().toUri()
+        return ResponseEntity.created(uri).body(usuario)
+    }
+
+    /**
+     * Atualiza um usuário
+     * @param usuario Usuário a ser atualizado
+     * @return Usuário atualizado
+     */
+    @PutMapping
+    @Transactional
+    fun atualizar(@RequestBody @Valid dto: AtualizacaoUsuarioForm): ResponseEntity<UsuarioView> {
+        val usuario = usuarioService.atualizar(dto)
+        return ResponseEntity.ok(usuario)
+    }
+
+    /**
+     * Deleta um usuário
+     * @param id Id do usuário
+     */
+    @DeleteMapping("/{id}")
+    @Transactional
+    fun deletar(@PathVariable id: Long) {
+        usuarioService.deletar(id)
+    }
+}

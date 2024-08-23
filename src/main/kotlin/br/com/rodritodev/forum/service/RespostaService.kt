@@ -1,12 +1,14 @@
 package br.com.rodritodev.forum.service
 
 import br.com.rodritodev.forum.dto.AtualizacaoRespostaForm
-import br.com.rodritodev.forum.dto.AtualizacaoTopicoForm
 import br.com.rodritodev.forum.dto.NovaRespostaForm
 import br.com.rodritodev.forum.dto.RespostaView
-import br.com.rodritodev.forum.mapper.RespostaFormMapper
+import br.com.rodritodev.forum.exception.NotFoundException
 import br.com.rodritodev.forum.mapper.RespostaViewMapper
+import br.com.rodritodev.forum.model.Resposta
 import br.com.rodritodev.forum.model.StatusTopico
+import br.com.rodritodev.forum.repository.RespostaRepository
+import br.com.rodritodev.forum.repository.TopicoRepository
 import org.springframework.stereotype.Service
 
 /**
@@ -14,9 +16,9 @@ import org.springframework.stereotype.Service
  */
 @Service
 class RespostaService(
-    private var topicoService: TopicoService,
+    private val topicoRepository: TopicoRepository,
+    private val respostaRepository: RespostaRepository,
     private var usuarioService: UsuarioService,
-    private val respostaFormMapper: RespostaFormMapper,
     private val respostaViewMapper: RespostaViewMapper,
 ) {
     /**
@@ -25,13 +27,11 @@ class RespostaService(
      * @return Lista de respostas
      */
     fun listar(idTopico: Long): List<RespostaView> {
-        val respostas = topicoService.buscarPorId(idTopico).respostas
-
-        if (respostas.isEmpty()) {
-            throw IllegalArgumentException("Tópico ($idTopico) não possui respostas")
+        val topico = topicoRepository.findById(idTopico).orElseThrow {
+            NotFoundException("Tópico não encontrado")
         }
 
-        return respostas
+        return topico.resposta.map { respostaViewMapper.map(it) }
     }
 
     /**
@@ -40,28 +40,28 @@ class RespostaService(
      * @return Resposta cadastrada
      */
     fun cadastrar(novaRespostaForm: NovaRespostaForm): RespostaView {
-        val topicoView = topicoService.buscarPorId(novaRespostaForm.idTopico)
-
-        if (topicoView.status == StatusTopico.FECHADO) {
-            throw IllegalStateException("Tópico não pode receber respostas pois está fechado")
+        val topico = topicoRepository.findById(novaRespostaForm.idTopico).orElseThrow {
+            NotFoundException("Tópico não encontrado")
         }
-        val resposta = respostaFormMapper.map(novaRespostaForm)
+
+        if (topico.status == StatusTopico.FECHADO) {
+            throw Exception("Tópico não pode receber respostas pois está fechado")
+        }
 
         val autor = usuarioService.buscarPorId(novaRespostaForm.idAutor)
-        resposta.id = topicoView.respostas.size.toLong() + 1
-        resposta.usuario = autor
-        resposta.topico = topicoView
-        topicoView.respostas = topicoView.respostas.plus(respostaViewMapper.map(resposta))
 
-        topicoService.atualizar(
-            AtualizacaoTopicoForm(
-                id = topicoView.id!!,
-                titulo = topicoView.titulo,
-                mensagem = topicoView.mensagem,
-                respostas = topicoView.respostas
-            )
+        val resposta = Resposta(
+            mensagem = novaRespostaForm.mensagem,
+            usuario = autor,
+            topico = topico,
+            solucao = false
         )
-        return respostaViewMapper.map(resposta)
+        val respostaSalva = respostaRepository.save(resposta)
+
+        topico.resposta = topico.resposta.plus(respostaSalva)
+        topicoRepository.save(topico)
+
+        return respostaViewMapper.map(respostaSalva)
     }
 
     /**
@@ -70,31 +70,31 @@ class RespostaService(
      * @return Resposta atualizada
      */
     fun atualizar(atualizacaoRespostaForm: AtualizacaoRespostaForm): RespostaView {
-        val topicoView = topicoService.buscarPorId(atualizacaoRespostaForm.idTopico)
-
-        val resposta = topicoView.respostas.find { it.id == atualizacaoRespostaForm.idResposta }
-
-        if (resposta == null) {
-            throw IllegalArgumentException("Resposta (${atualizacaoRespostaForm.idResposta}) não encontrada")
+        val topico = topicoRepository.findById(atualizacaoRespostaForm.idTopico).orElseThrow {
+            NotFoundException("Tópico não encontrado")
         }
 
-        topicoView.respostas = topicoView.respostas.minus(resposta)
+        if (topico.status == StatusTopico.FECHADO) {
+            throw Exception("Tópico não pode receber respostas pois está fechado")
+        }
 
-        resposta.mensagem = atualizacaoRespostaForm.mensagem
-        resposta.solucao = atualizacaoRespostaForm.solucao ?: false
+        val respostaAtualizada = topico.resposta.firstOrNull { resposta ->
+            resposta.id == atualizacaoRespostaForm.idResposta
+        }
 
-        topicoView.respostas = topicoView.respostas.plus(resposta)
+        if (respostaAtualizada == null) {
+            throw Exception("Resposta não encontrada")
+        }
 
-        topicoService.atualizar(
-            AtualizacaoTopicoForm(
-                id = topicoView.id!!,
-                titulo = topicoView.titulo,
-                mensagem = topicoView.mensagem,
-                respostas = topicoView.respostas
-            )
-        )
+        respostaAtualizada.mensagem = atualizacaoRespostaForm.mensagem
+        respostaAtualizada.solucao = atualizacaoRespostaForm.solucao == true
+        respostaAtualizada.topico = topico
 
-        return resposta
+        topico.resposta = topico.resposta.minus(respostaAtualizada).plus(respostaAtualizada)
+
+        topicoRepository.save(topico)
+
+        return respostaViewMapper.map(respostaAtualizada)
     }
 
     /**
@@ -103,17 +103,19 @@ class RespostaService(
      * @param idResposta Id da resposta
      * @return Resposta marcada como solução
      */
-    fun marcarComoSolucao(idTopico: Long, idResposta: Long): RespostaView? {
-        val topicoView = topicoService.buscarPorId(idTopico)
-
-        if (topicoView.status == StatusTopico.FECHADO) {
-            throw IllegalStateException("Tópico não pode receber respostas pois está fechado")
+    fun marcarComoSolucao(idTopico: Long, idResposta: Long): Resposta? {
+        val topico = topicoRepository.findById(idTopico).orElseThrow {
+            NotFoundException("Tópico não encontrado")
         }
 
-        val resposta = topicoView.respostas.find { it.id == idResposta }
+        if (topico.status == StatusTopico.FECHADO) {
+            throw Exception("Tópico não pode receber respostas pois está fechado")
+        }
+
+        val resposta = topico.resposta.find { it.id == idResposta }
 
         if (resposta == null) {
-            throw IllegalArgumentException("Resposta ($idResposta) não encontrada")
+            throw Exception("Resposta ($idResposta) não encontrada")
         }
 
         resposta.solucao = true
@@ -127,17 +129,19 @@ class RespostaService(
      * @param idResposta Id da resposta
      * @return Resposta com a marcação de solução removida
      */
-    fun removerSolucao(idTopico: Long, idResposta: Long): RespostaView? {
-        val topicoView = topicoService.buscarPorId(idTopico)
-
-        if (topicoView.status == StatusTopico.FECHADO) {
-            throw IllegalStateException("Tópico não pode receber respostas pois está fechado")
+    fun removerSolucao(idTopico: Long, idResposta: Long): Resposta? {
+        val topico = topicoRepository.findById(idTopico).orElseThrow {
+            NotFoundException("Tópico não encontrado")
         }
 
-        val resposta = topicoView.respostas.find { it.id == idResposta }
+        if (topico.status == StatusTopico.FECHADO) {
+            throw Exception("Tópico não pode receber respostas pois está fechado")
+        }
+
+        val resposta = topico.resposta.find { it.id == idResposta }
 
         if (resposta == null) {
-            throw IllegalArgumentException("Resposta ($idResposta) não encontrada")
+            throw Exception("Resposta ($idResposta) não encontrada")
         }
 
         resposta.solucao = false
@@ -151,39 +155,34 @@ class RespostaService(
      * @param idResposta Id da resposta
      */
     fun deletar(idTopico: Long, idResposta: Long) {
-        val topicoView = topicoService.buscarPorId(idTopico)
-
-        if (topicoView.status == StatusTopico.FECHADO) {
-            throw IllegalStateException("Tópico não pode receber respostas pois está fechado")
+        val topico = topicoRepository.findById(idTopico).orElseThrow {
+            NotFoundException("Tópico não encontrado")
         }
 
-        if (topicoView.respostas.isEmpty()) {
-            throw IllegalArgumentException("Tópico ($idTopico) não possui respostas")
+        if (topico.status == StatusTopico.FECHADO) {
+            throw Exception("Tópico não pode receber respostas pois está fechado")
         }
 
-        if (topicoView.respostas.size == 1) {
-            throw IllegalStateException("Tópico não pode ficar sem respostas")
+        if (topico.resposta.isEmpty()) {
+            throw NotFoundException("Tópico ($idTopico) não possui respostas")
         }
 
-        val resposta = topicoView.respostas.find { it.id == idResposta }
+        if (topico.resposta.size == 1) {
+            throw Exception("Tópico não pode ficar sem respostas")
+        }
+
+        val resposta = topico.resposta.find { it.id == idResposta }
 
         if (resposta == null) {
-            throw IllegalArgumentException("Resposta ($idResposta) não encontrada")
+            throw NotFoundException("Resposta não encontrada")
         }
 
         if (resposta.solucao) {
-            throw IllegalStateException("Resposta marcada como solução não pode ser deletada")
+            throw Exception("Resposta marcada como solução não pode ser deletada")
         }
 
-        topicoView.respostas = topicoView.respostas.minus(resposta)
+        topico.resposta = topico.resposta.minus(resposta)
 
-        topicoService.atualizar(
-            AtualizacaoTopicoForm(
-                id = topicoView.id!!,
-                titulo = topicoView.titulo,
-                mensagem = topicoView.mensagem,
-                respostas = topicoView.respostas
-            )
-        )
+        topicoRepository.save(topico)
     }
 }

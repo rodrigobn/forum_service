@@ -12,7 +12,7 @@ import jakarta.validation.constraints.Size
  */
 data class AtualizacaoTopicoForm(
     @field:NotNull val id: Long,
-    @field:NotEmpty @Size(min = 5, max = 50) val titulo: String,
+    @field:NotEmpty @Size(min = 5, max = 150) val titulo: String,
     @field:NotEmpty val mensagem: String,
     val respostas: List<RespostaView>,
 )

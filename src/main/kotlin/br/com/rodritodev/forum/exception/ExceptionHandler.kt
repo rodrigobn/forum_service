@@ -69,4 +69,21 @@ class ExceptionHandler {
             path = request.servletPath
         )
     }
+
+    /**
+     * Trata exceções do tipo UsuarioJaCadastradoException
+     * @param exception Exceção lançada
+     * @param request Requisição HTTP
+     * @return View de erro
+     */
+    @ExceptionHandler(UsuarioJaCadastradoException::class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    fun handleUsuarioJaCadastrado(exception: UsuarioJaCadastradoException, request: HttpServletRequest): ErrorView {
+        return ErrorView(
+            status = HttpStatus.CONFLICT.value(),
+            error = HttpStatus.CONFLICT.name,
+            message = exception.message,
+            path = request.servletPath
+        )
+    }
 }

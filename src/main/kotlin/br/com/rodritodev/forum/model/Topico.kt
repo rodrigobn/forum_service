@@ -1,18 +1,24 @@
 package br.com.rodritodev.forum.model
 
-import br.com.rodritodev.forum.dto.RespostaView
+import jakarta.persistence.*
 import java.time.LocalDateTime
 
 /**
  * Modelo de tópico do fórum
  */
+@Entity
 data class Topico(
-    var id: Long? = null,
-    val titulo: String,
-    val mensagem: String,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0,
+    var titulo: String = "",
+    var mensagem: String = "",
     val dataCriacao: LocalDateTime = LocalDateTime.now(),
-    val curso: Curso,
-    val autor: Usuario,
+    @ManyToOne
+    val curso: Curso = Curso(),
+    @ManyToOne
+    val autor: Usuario = Usuario(),
+    @Enumerated(value = EnumType.STRING)
     val status: StatusTopico = StatusTopico.NAO_RESPONDIDO,
-    val resposta: List<RespostaView> = ArrayList(),
+    @OneToMany(mappedBy = "topico")
+    var resposta: List<Resposta> = ArrayList(),
 )

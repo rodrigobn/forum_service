@@ -18,6 +18,7 @@ class RespostaViewMapper: Mapper<Resposta, RespostaView> {
             mensagem = t.mensagem,
             dataCriacao = t.dataCriacao,
             nomeAutor = t.usuario?.nome ?: "Desconhecido",
+            tituloTopico = t.topico?.titulo ?: "Desconhecido",
             solucao = t.solucao,
         )
     }

@@ -8,6 +8,10 @@ import jakarta.validation.constraints.Size
  * Formulário de criação de um novo tópico no fórum
  *
  * Form é um dto que chega na aplicação
+ * @property titulo Título do tópico
+ * @property mensagem Mensagem do tópico
+ * @property idCurso Id do curso do tópico
+ * @property idAutor Id do autor do tópico
  */
 data class NovoTopicoForm(
     @field:NotEmpty(message = "O título não pode ser em branco")

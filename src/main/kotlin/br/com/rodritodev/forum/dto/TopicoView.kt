@@ -2,6 +2,7 @@ package br.com.rodritodev.forum.dto
 
 import br.com.rodritodev.forum.model.Resposta
 import br.com.rodritodev.forum.model.StatusTopico
+import jakarta.persistence.*
 import java.time.LocalDateTime
 
 /**
@@ -15,5 +16,5 @@ data class TopicoView(
     val mensagem: String,
     val status: StatusTopico,
     val dataCriacao: LocalDateTime,
-    var respostas: List<RespostaView>,
+    var respostas: List<Resposta>,
 )

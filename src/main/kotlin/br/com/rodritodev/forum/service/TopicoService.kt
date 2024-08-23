@@ -7,6 +7,7 @@ import br.com.rodritodev.forum.exception.NotFoundException
 import br.com.rodritodev.forum.mapper.TopicoFormMapper
 import br.com.rodritodev.forum.mapper.TopicoViewMapper
 import br.com.rodritodev.forum.model.Topico
+import br.com.rodritodev.forum.repository.TopicoRepository
 import org.springframework.stereotype.Service
 
 /**
@@ -14,18 +15,16 @@ import org.springframework.stereotype.Service
  */
 @Service
 class TopicoService(
-    private var topicos: List<Topico> = ArrayList(),
+    private var repository: TopicoRepository,
     private val topicoViewMapper: TopicoViewMapper,
     private val topicoFormMapper: TopicoFormMapper,
 ) {
     /**
-     * Retorna uma lista de tópicos
+     * Lista todos os tópicos
      * @return Lista de tópicos
      */
     fun listar(): List<TopicoView> {
-        return topicos.stream().map { topico ->
-            topicoViewMapper.map(topico)
-        }.toList()
+        return repository.findAll().map(topicoViewMapper::map).toList()
     }
 
     /**
@@ -34,10 +33,10 @@ class TopicoService(
      * @return Tópico encontrado
      */
     fun buscarPorId(id: Long): TopicoView {
-        val topico = topicos.find { it.id == id }
-        if (topico == null) {
-            throw NotFoundException("Tópico não encontrado")
+        val topico = repository.findById(id).orElseThrow {
+            NotFoundException("Tópico não encontrado")
         }
+
         return topicoViewMapper.map(topico)
     }
 
@@ -47,8 +46,7 @@ class TopicoService(
      */
     fun cadastrar(dto: NovoTopicoForm): TopicoView {
         val topico = topicoFormMapper.map(dto)
-        topico.id = topicos.size.toLong() + 1
-        topicos = topicos.plus(topico)
+        repository.save(topico)
         return topicoViewMapper.map(topico)
     }
 
@@ -57,26 +55,14 @@ class TopicoService(
      * @param dto Dados do tópico
      */
     fun atualizar(dto: AtualizacaoTopicoForm): TopicoView {
-        val topico = topicos.find { it.id == dto.id }
-
-        if (topico == null) {
-            throw NotFoundException("Tópico não encontrado")
+        val topico = repository.findById(dto.id).orElseThrow {
+            NotFoundException("Tópico não encontrado")
         }
+        topico.titulo = dto.titulo
+        topico.mensagem = dto.mensagem
+        repository.save(topico)
 
-        val topicoAtualizado = Topico(
-            id = dto.id,
-            titulo = dto.titulo,
-            mensagem = dto.mensagem,
-            dataCriacao = topico.dataCriacao,
-            curso = topico.curso,
-            autor = topico.autor,
-            status = topico.status,
-            resposta = dto.respostas,
-        )
-
-        topicos = topicos.minus(topico).plus(topicoAtualizado)
-
-        return topicoViewMapper.map(topicoAtualizado)
+        return topicoViewMapper.map(topico)
     }
 
     /**
@@ -84,12 +70,6 @@ class TopicoService(
      * @param id Id do tópico
      */
     fun deletar(id: Long) {
-        val topico = topicos.find { it.id == id }
-
-        if (topico == null) {
-            throw NotFoundException("Tópico não encontrado")
-        }
-
-        topicos = topicos.minus(topico)
+        repository.deleteById(id)
     }
 }

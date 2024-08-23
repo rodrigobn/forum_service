@@ -3,7 +3,9 @@ package br.com.rodritodev.forum.controller
 import br.com.rodritodev.forum.dto.AtualizacaoRespostaForm
 import br.com.rodritodev.forum.dto.NovaRespostaForm
 import br.com.rodritodev.forum.dto.RespostaView
+import br.com.rodritodev.forum.model.Resposta
 import br.com.rodritodev.forum.service.RespostaService
+import jakarta.transaction.Transactional
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -33,6 +35,7 @@ class RespostaController(private val respostaService: RespostaService) {
      * @return Resposta cadastrada e URI da nova resposta
      */
     @PostMapping
+    @Transactional
     fun cadastrar(
         @RequestBody @Valid resposta: NovaRespostaForm,
         uriComponentsBuilder: UriComponentsBuilder
@@ -49,6 +52,7 @@ class RespostaController(private val respostaService: RespostaService) {
      * @return Resposta atualizada
      */
     @PutMapping
+    @Transactional
     fun atualizar(@RequestBody @Valid atualizacaoRespostaForm: AtualizacaoRespostaForm): ResponseEntity<RespostaView> {
         val respostaView = respostaService.atualizar(atualizacaoRespostaForm)
         return ResponseEntity.ok(respostaView)
@@ -61,9 +65,10 @@ class RespostaController(private val respostaService: RespostaService) {
      * @return Resposta com a marcação de solução
      */
     @PutMapping("topico/{idTopico}/solucao/{idResposta}")
-    fun marcarComoSolucao(@PathVariable idTopico: Long, @PathVariable idResposta: Long): ResponseEntity<RespostaView> {
-        val respostaView = respostaService.marcarComoSolucao(idTopico, idResposta)
-        return ResponseEntity.ok(respostaView)
+    @Transactional
+    fun marcarComoSolucao(@PathVariable idTopico: Long, @PathVariable idResposta: Long): ResponseEntity<Resposta> {
+        val resposta = respostaService.marcarComoSolucao(idTopico, idResposta)
+        return ResponseEntity.ok(resposta)
     }
 
     /**
@@ -73,9 +78,10 @@ class RespostaController(private val respostaService: RespostaService) {
      * @return Resposta com a marcação de solução removida
      */
     @DeleteMapping("topico/{idTopico}/remove/{idResposta}")
-    fun removerSolucao(@PathVariable idTopico: Long, @PathVariable idResposta: Long): ResponseEntity<RespostaView> {
-        val respostaView = respostaService.removerSolucao(idTopico, idResposta)
-        return ResponseEntity.ok(respostaView)
+    @Transactional
+    fun removerSolucao(@PathVariable idTopico: Long, @PathVariable idResposta: Long): ResponseEntity<Resposta> {
+        val resposta = respostaService.removerSolucao(idTopico, idResposta)
+        return ResponseEntity.ok(resposta)
     }
 
     /**
@@ -84,6 +90,7 @@ class RespostaController(private val respostaService: RespostaService) {
      */
     @DeleteMapping("/{idTopico}/{idResposta}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Transactional
     fun deletar(@PathVariable idTopico: Long, @PathVariable idResposta: Long) {
         respostaService.deletar(idTopico, idResposta)
     }
