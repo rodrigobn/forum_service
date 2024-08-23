@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component
  * Mapper é uma classe que transforma um objeto em outro
  */
 @Component
-class TopicoViewMapper: Mapper<Topico, TopicoView> {
+class TopicoViewMapper(
+    private val respostaViewMapper: RespostaViewMapper,
+) : Mapper<Topico, TopicoView> {
 
     /**
      * Mapeia um Topico para um TopicoView
@@ -24,7 +26,7 @@ class TopicoViewMapper: Mapper<Topico, TopicoView> {
             mensagem = t.mensagem,
             status = t.status,
             dataCriacao = t.dataCriacao,
-            respostas = t.resposta
+            respostas = t.resposta.map(respostaViewMapper::map).toList()
         )
     }
 }

@@ -11,8 +11,8 @@ import jakarta.persistence.Id
 @Entity
 data class Usuario(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
-    var nome: String = "",
-    var email: String = "",
-    var senha: String = "",
+    val id: Long? = null,
+    var nome: String,
+    var email: String,
+    var senha: String,
 )

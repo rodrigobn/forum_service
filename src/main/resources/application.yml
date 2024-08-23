@@ -6,5 +6,7 @@ spring:
     password:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
-
-server.address: 0.0.0.0
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true

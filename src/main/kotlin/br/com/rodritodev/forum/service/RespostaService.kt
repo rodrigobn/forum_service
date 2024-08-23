@@ -103,7 +103,7 @@ class RespostaService(
      * @param idResposta Id da resposta
      * @return Resposta marcada como solução
      */
-    fun marcarComoSolucao(idTopico: Long, idResposta: Long): Resposta? {
+    fun marcarComoSolucao(idTopico: Long, idResposta: Long): RespostaView? {
         val topico = topicoRepository.findById(idTopico).orElseThrow {
             NotFoundException("Tópico não encontrado")
         }
@@ -120,7 +120,7 @@ class RespostaService(
 
         resposta.solucao = true
 
-        return resposta
+        return respostaViewMapper.map(resposta)
     }
 
     /**

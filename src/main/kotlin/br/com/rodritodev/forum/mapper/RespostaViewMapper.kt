@@ -12,9 +12,14 @@ import org.springframework.stereotype.Component
 @Component
 class RespostaViewMapper: Mapper<Resposta, RespostaView> {
 
+    /**
+     * Mapeia uma Resposta para uma RespostaView
+     * @param t Resposta
+     * @return Visualização de resposta mapeada
+     */
     override fun map(t: Resposta): RespostaView {
         return RespostaView(
-            id = t.id,
+            id = t.id ?: 0,
             mensagem = t.mensagem,
             dataCriacao = t.dataCriacao,
             nomeAutor = t.usuario?.nome ?: "Desconhecido",

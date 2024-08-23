@@ -3,6 +3,7 @@ package br.com.rodritodev.forum.service
 import br.com.rodritodev.forum.dto.AtualizacaoUsuarioForm
 import br.com.rodritodev.forum.dto.NovoUsuarioForm
 import br.com.rodritodev.forum.dto.UsuarioView
+import br.com.rodritodev.forum.exception.NotFoundException
 import br.com.rodritodev.forum.exception.UsuarioJaCadastradoException
 import br.com.rodritodev.forum.extensions.maskEmail
 import br.com.rodritodev.forum.mapper.UsuarioMapper
@@ -80,6 +81,9 @@ class UsuarioService(
      * @param id Id do usuário
      */
     fun deletar(id: Long) {
+        repository.findById(id).orElseThrow {
+            NotFoundException("Usuário ($id) não encontrado")
+        }
         repository.deleteById(id)
     }
 }

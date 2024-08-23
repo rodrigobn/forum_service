@@ -66,7 +66,7 @@ class RespostaController(private val respostaService: RespostaService) {
      */
     @PutMapping("topico/{idTopico}/solucao/{idResposta}")
     @Transactional
-    fun marcarComoSolucao(@PathVariable idTopico: Long, @PathVariable idResposta: Long): ResponseEntity<Resposta> {
+    fun marcarComoSolucao(@PathVariable idTopico: Long, @PathVariable idResposta: Long): ResponseEntity<RespostaView> {
         val resposta = respostaService.marcarComoSolucao(idTopico, idResposta)
         return ResponseEntity.ok(resposta)
     }

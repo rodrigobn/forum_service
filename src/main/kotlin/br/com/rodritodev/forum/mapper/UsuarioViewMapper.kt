@@ -20,7 +20,7 @@ class UsuarioViewMapper: Mapper<Usuario, UsuarioView> {
      */
     override fun map(t: Usuario): UsuarioView {
         return UsuarioView(
-            id = t.id,
+            id = t.id ?: 0,
             nome = t.nome,
             email = t.email,
             senha = t.senha.maskSenha(),

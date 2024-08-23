@@ -15,12 +15,12 @@ import java.time.LocalDateTime
 @Entity
 data class Resposta(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long = 0,
-    var mensagem: String = "",
+    var id: Long? = null,
+    var mensagem: String,
     val dataCriacao: LocalDateTime = LocalDateTime.now(),
     @ManyToOne
-    var usuario: Usuario? = Usuario(),
+    var usuario: Usuario? = null,
     @ManyToOne
-    var topico: Topico? = Topico(),
+    var topico: Topico? = null,
     var solucao: Boolean = false,
 )
