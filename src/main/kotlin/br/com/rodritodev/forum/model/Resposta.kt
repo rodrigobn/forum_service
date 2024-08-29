@@ -2,11 +2,7 @@ package br.com.rodritodev.forum.model
 
 import br.com.rodritodev.forum.dto.TopicoView
 import br.com.rodritodev.forum.dto.UsuarioView
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.ManyToOne
+import jakarta.persistence.*
 import java.time.LocalDateTime
 
 /**
@@ -19,8 +15,10 @@ data class Resposta(
     var mensagem: String,
     val dataCriacao: LocalDateTime = LocalDateTime.now(),
     @ManyToOne
+    @JoinColumn(name = "autor_id")
     var usuario: Usuario? = null,
     @ManyToOne
+    @JoinColumn(name = "topico_id")
     var topico: Topico? = null,
     var solucao: Boolean = false,
 )
