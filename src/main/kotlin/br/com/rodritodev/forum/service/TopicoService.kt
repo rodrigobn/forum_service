@@ -70,6 +70,9 @@ class TopicoService(
      * @param id Id do tópico
      */
     fun deletar(id: Long) {
+        repository.findById(id).orElseThrow {
+            NotFoundException("Tópico não encontrado")
+        }
         repository.deleteById(id)
     }
 }

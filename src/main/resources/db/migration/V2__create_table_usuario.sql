@@ -15,3 +15,5 @@ insert into usuario (id, nome, email, senha) values (7, 'Ana', 'ana@mail.com', '
 insert into usuario (id, nome, email, senha) values (8, 'Paulo', 'paulo@mail.com', '123456');
 insert into usuario (id, nome, email, senha) values (9, 'Pedro', 'pedro@mail.com', '123456');
 insert into usuario (id, nome, email, senha) values (10, 'Lucas', 'lucas@mail.com', '123456');
+
+ALTER TABLE usuario ALTER COLUMN id RESTART WITH 11;

@@ -86,4 +86,21 @@ class ExceptionHandler {
             path = request.servletPath
         )
     }
+
+    /**
+     * Trata exceções do tipo DataIntegrityViolationException (erro de integridade de dados)
+     * @param exception Exceção lançada
+     * @param request Requisição HTTP
+     * @return View de erro
+     */
+    @ExceptionHandler(DataIntegrityViolationException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handleDataIntegrityViolation(exception: DataIntegrityViolationException, request: HttpServletRequest): ErrorView {
+        return ErrorView(
+            status = HttpStatus.BAD_REQUEST.value(),
+            error = HttpStatus.BAD_REQUEST.name,
+            message = exception.message,
+            path = request.servletPath
+        )
+    }
 }
