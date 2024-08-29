@@ -79,7 +79,7 @@ class RespostaController(private val respostaService: RespostaService) {
      */
     @DeleteMapping("topico/{idTopico}/remove/{idResposta}")
     @Transactional
-    fun removerSolucao(@PathVariable idTopico: Long, @PathVariable idResposta: Long): ResponseEntity<Resposta> {
+    fun removerSolucao(@PathVariable idTopico: Long, @PathVariable idResposta: Long): ResponseEntity<RespostaView> {
         val resposta = respostaService.removerSolucao(idTopico, idResposta)
         return ResponseEntity.ok(resposta)
     }

@@ -10,7 +10,8 @@ import jakarta.persistence.Id
  */
 @Entity
 data class Curso(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
     var nome: String,
     var categoria: String,

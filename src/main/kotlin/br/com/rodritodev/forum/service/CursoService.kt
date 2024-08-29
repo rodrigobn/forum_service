@@ -1,14 +1,20 @@
 package br.com.rodritodev.forum.service
 
+import br.com.rodritodev.forum.exception.DataIntegrityViolationException
+import br.com.rodritodev.forum.exception.NotFoundException
 import br.com.rodritodev.forum.model.Curso
 import br.com.rodritodev.forum.repository.CursoRepository
+import br.com.rodritodev.forum.repository.TopicoRepository
 import org.springframework.stereotype.Service
 
 /**
  * Serviço de cursos do fórum
  */
 @Service
-class CursoService(private val repository: CursoRepository) {
+class CursoService(
+    private val repository: CursoRepository,
+    private val topicoRepository: TopicoRepository,
+) {
 
     /**
      * Busca um curso pelo id
@@ -44,8 +50,14 @@ class CursoService(private val repository: CursoRepository) {
      * @param id Id do curso
      */
     fun deletar(id: Long) {
+        val topicos = topicoRepository.findAll()
+        topicos.forEach {
+            if (it.curso.id == id) {
+                throw DataIntegrityViolationException("Curso com ID $id está sendo referenciado por tópicos existentes e não pode ser deletado.")
+            }
+        }
         repository.findById(id).orElseThrow {
-            Exception("Curso ($id) não encontrado")
+            NotFoundException("Curso ($id) não encontrado")
         }
         repository.deleteById(id)
     }

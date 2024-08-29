@@ -60,3 +60,5 @@ insert into curso (id, nome, categoria) values (52, 'SolidWorks', 'Engenharia');
 insert into curso (id, nome, categoria) values (53, 'Catia', 'Engenharia');
 insert into curso (id, nome, categoria) values (54, 'Ansys', 'Engenharia');
 insert into curso (id, nome, categoria) values (55, 'Revit', 'Engenharia');
+
+ALTER TABLE curso ALTER COLUMN id RESTART WITH 56;

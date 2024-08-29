@@ -129,7 +129,7 @@ class RespostaService(
      * @param idResposta Id da resposta
      * @return Resposta com a marcação de solução removida
      */
-    fun removerSolucao(idTopico: Long, idResposta: Long): Resposta? {
+    fun removerSolucao(idTopico: Long, idResposta: Long): RespostaView? {
         val topico = topicoRepository.findById(idTopico).orElseThrow {
             NotFoundException("Tópico não encontrado")
         }
@@ -146,7 +146,7 @@ class RespostaService(
 
         resposta.solucao = false
 
-        return resposta
+        return respostaViewMapper.map(resposta)
     }
 
     /**
