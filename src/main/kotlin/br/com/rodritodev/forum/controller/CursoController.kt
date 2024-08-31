@@ -4,6 +4,8 @@ import br.com.rodritodev.forum.model.Curso
 import br.com.rodritodev.forum.service.CursoService
 import jakarta.transaction.Transactional
 import jakarta.validation.Valid
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -16,18 +18,19 @@ import org.springframework.web.util.UriComponentsBuilder
 /**
  * Controlador de cursos do fórum
  */
-@RestController
-@RequestMapping("/cursos")
+@RestController // Indica que a classe é um controlador REST
+@RequestMapping("/cursos") // Indica o caminho base para as requisições
 class CursoController(private val cursoService: CursoService) {
 
     /**
      * Lista todos os cursos ou filtra por nome do curso
      * @return Lista de cursos
      */
-    @GetMapping
+    @GetMapping // Indica que o método responde a requisições GET
+    @Cacheable("cursosEmCache") // Habilita o cache para a lista de cursos
     fun listar(
-        @RequestParam(required = false) nomeCurso: String?,
-        @PageableDefault(size = 10, sort = ["nome"], direction = Sort.Direction.ASC) pageable: Pageable
+        @RequestParam(required = false) nomeCurso: String?, // Parâmetro opcional para filtrar por nome do curso
+        @PageableDefault(size = 10, sort = ["nome"], direction = Sort.Direction.ASC) pageable: Pageable // Parâmetros de paginação
     ): Page<Curso> {
         return cursoService.listar(nomeCurso, pageable)
     }
@@ -48,7 +51,8 @@ class CursoController(private val cursoService: CursoService) {
      * @return Curso cadastrado e URI do novo curso
      */
     @PostMapping
-    @Transactional
+    @Transactional // Indica que a transação será aberta e fechada automaticamente
+    @CacheEvict(value = ["cursosEmCache"], allEntries = true) // Limpa o cache de cursos ao cadastrar um novo curso
     fun cadastrar(
         @RequestBody @Valid dto: Curso,
         uriBuilder: UriComponentsBuilder
@@ -67,6 +71,7 @@ class CursoController(private val cursoService: CursoService) {
      */
     @PutMapping
     @Transactional
+    @CacheEvict(value = ["cursosEmCache"], allEntries = true)
     fun atualizar(@RequestBody @Valid dto: Curso): ResponseEntity<Curso> {
         val curso = cursoService.atualizar(dto)
         return ResponseEntity.ok(curso)
@@ -77,8 +82,9 @@ class CursoController(private val cursoService: CursoService) {
      * @param id Id do curso
      */
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.NO_CONTENT) // Indica que a resposta será um status 204 No Content
     @Transactional
+    @CacheEvict(value = ["cursosEmCache"], allEntries = true)
     fun deletar(@PathVariable id: Long){
         cursoService.deletar(id)
     }

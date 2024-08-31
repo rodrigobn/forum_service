@@ -7,6 +7,8 @@ import br.com.rodritodev.forum.model.Usuario
 import br.com.rodritodev.forum.service.UsuarioService
 import jakarta.transaction.Transactional
 import jakarta.validation.Valid
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -23,6 +25,7 @@ class UsuarioController(private val usuarioService: UsuarioService) {
      * @return Lista de usuários
      */
     @GetMapping
+    @Cacheable("usuariosEmCache") // Habilita o cache para a lista de usuários
     fun listar(
         @RequestParam(required = false) nome: String?,
         @PageableDefault(size = 10, sort = ["nome"]) paginacao: Pageable
@@ -47,6 +50,7 @@ class UsuarioController(private val usuarioService: UsuarioService) {
      */
     @PostMapping
     @Transactional
+    @CacheEvict(value = ["usuariosEmCache"], allEntries = true) // Limpa o cache de usuários ao cadastrar um novo usuário
     fun cadastrar(
         @RequestBody @Valid dto: NovoUsuarioForm,
         uriBuilder: UriComponentsBuilder,
@@ -63,6 +67,7 @@ class UsuarioController(private val usuarioService: UsuarioService) {
      */
     @PutMapping
     @Transactional
+    @CacheEvict(value = ["usuariosEmCache"], allEntries = true) // Limpa o cache de usuários ao atualizar um usuário
     fun atualizar(@RequestBody @Valid dto: AtualizacaoUsuarioForm): ResponseEntity<UsuarioView> {
         val usuario = usuarioService.atualizar(dto)
         return ResponseEntity.ok(usuario)
@@ -74,6 +79,7 @@ class UsuarioController(private val usuarioService: UsuarioService) {
      */
     @DeleteMapping("/{id}")
     @Transactional
+    @CacheEvict(value = ["usuariosEmCache"], allEntries = true) // Limpa o cache de usuários ao deletar um usuário
     fun deletar(@PathVariable id: Long) {
         usuarioService.deletar(id)
     }
