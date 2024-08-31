@@ -10,6 +10,8 @@ import br.com.rodritodev.forum.mapper.UsuarioMapper
 import br.com.rodritodev.forum.mapper.UsuarioViewMapper
 import br.com.rodritodev.forum.model.Usuario
 import br.com.rodritodev.forum.repository.UsuarioRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 /**
@@ -21,13 +23,15 @@ class UsuarioService(
     private val usuarioViewMapper: UsuarioViewMapper,
     private val usuarioMapper: UsuarioMapper,
 ) {
-
     /**
-     * Retorna uma lista de usuários
+     * Retorna uma lista de usuários ou filtra por nome
      * @return Lista de usuários
      */
-    fun listar(): List<UsuarioView> {
-        return repository.findAll().map(usuarioViewMapper::map).toList()
+    fun listar(nome: String?, paginacao: Pageable): Page<UsuarioView> {
+        if (nome != null) {
+            return repository.findByNomeContaining(nome, paginacao).map(usuarioViewMapper::map)
+        }
+        return repository.findAll(paginacao).map(usuarioViewMapper::map)
     }
 
     /**
@@ -39,7 +43,6 @@ class UsuarioService(
         val usuario = repository.findById(id).orElseThrow {
             Exception("Usuário (${id}) não encontrado")
         }
-        // TODO - Implementar mapper para Usuario sem exibir a senha
         return usuarioMapper.map(usuarioViewMapper.map(usuario))
     }
 

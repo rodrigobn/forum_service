@@ -5,6 +5,8 @@ import br.com.rodritodev.forum.exception.NotFoundException
 import br.com.rodritodev.forum.model.Curso
 import br.com.rodritodev.forum.repository.CursoRepository
 import br.com.rodritodev.forum.repository.TopicoRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 /**
@@ -17,6 +19,20 @@ class CursoService(
 ) {
 
     /**
+     * Lista todos os cursos ou filtra por nome do curso
+     * @return Lista de cursos
+     */
+    fun listar(
+        nomeCurso: String?,
+        pageable: Pageable
+    ): Page<Curso> {
+        if (nomeCurso != null) {
+            return repository.findByNomeContaining(nomeCurso, pageable)
+        }
+        return repository.findAll(pageable)
+    }
+
+    /**
      * Busca um curso pelo id
      * @param id Id do curso
      * @return Curso encontrado
@@ -25,14 +41,6 @@ class CursoService(
         return repository.findById(id).orElseThrow {
             IllegalArgumentException("Curso ($id) não encontrado")
         }
-    }
-
-    /**
-     * Lista todos os cursos
-     * @return Lista de cursos
-     */
-    fun listar(): List<Curso> {
-        return repository.findAll().toList()
     }
 
     /**

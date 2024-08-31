@@ -6,8 +6,9 @@ import br.com.rodritodev.forum.dto.TopicoView
 import br.com.rodritodev.forum.exception.NotFoundException
 import br.com.rodritodev.forum.mapper.TopicoFormMapper
 import br.com.rodritodev.forum.mapper.TopicoViewMapper
-import br.com.rodritodev.forum.model.Topico
 import br.com.rodritodev.forum.repository.TopicoRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 /**
@@ -20,11 +21,17 @@ class TopicoService(
     private val topicoFormMapper: TopicoFormMapper,
 ) {
     /**
-     * Lista todos os tópicos
+     * Lista todos os tópicos ou filtra por nome do curso
      * @return Lista de tópicos
      */
-    fun listar(): List<TopicoView> {
-        return repository.findAll().map(topicoViewMapper::map).toList()
+    fun listar(
+        nomeCurso: String?,
+        paginacao: Pageable
+    ): Page<TopicoView> {
+        if (nomeCurso != null) {
+            return repository.findByCursoNome(nomeCurso, paginacao).map(topicoViewMapper::map)
+        }
+        return repository.findAll(paginacao).map(topicoViewMapper::map)
     }
 
     /**

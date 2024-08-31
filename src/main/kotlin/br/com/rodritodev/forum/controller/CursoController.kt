@@ -4,6 +4,10 @@ import br.com.rodritodev.forum.model.Curso
 import br.com.rodritodev.forum.service.CursoService
 import jakarta.transaction.Transactional
 import jakarta.validation.Valid
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -17,12 +21,15 @@ import org.springframework.web.util.UriComponentsBuilder
 class CursoController(private val cursoService: CursoService) {
 
     /**
-     * Lista todos os cursos
+     * Lista todos os cursos ou filtra por nome do curso
      * @return Lista de cursos
      */
     @GetMapping
-    fun listar(): List<Curso> {
-        return cursoService.listar()
+    fun listar(
+        @RequestParam(required = false) nomeCurso: String?,
+        @PageableDefault(size = 10, sort = ["nome"], direction = Sort.Direction.ASC) pageable: Pageable
+    ): Page<Curso> {
+        return cursoService.listar(nomeCurso, pageable)
     }
 
     /**

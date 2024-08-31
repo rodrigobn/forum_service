@@ -6,6 +6,10 @@ import br.com.rodritodev.forum.dto.TopicoView
 import br.com.rodritodev.forum.service.TopicoService
 import jakarta.transaction.Transactional
 import jakarta.validation.Valid
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -19,12 +23,15 @@ import org.springframework.web.util.UriComponentsBuilder
 class TopicoController(private val topicoService: TopicoService) {
 
     /**
-     * Lista todos os tópicos
+     * Lista todos os tópicos ou filtra por nome do curso
      * @return Lista de tópicos
      */
     @GetMapping
-    fun listar(): List<TopicoView> {
-        return topicoService.listar()
+    fun listar(
+        @RequestParam(required = false) nomeCurso: String?,
+        @PageableDefault(size = 10, sort = ["titulo"], direction = Sort.Direction.DESC) paginacao: Pageable
+    ): Page<TopicoView> {
+        return topicoService.listar(nomeCurso, paginacao)
     }
 
     /**
@@ -62,7 +69,7 @@ class TopicoController(private val topicoService: TopicoService) {
      */
     @PutMapping
     @Transactional
-    fun atualizar(@RequestBody @Valid dto: AtualizacaoTopicoForm): ResponseEntity<TopicoView>  {
+    fun atualizar(@RequestBody @Valid dto: AtualizacaoTopicoForm): ResponseEntity<TopicoView> {
         val topicoView = topicoService.atualizar(dto)
         return ResponseEntity.ok(topicoView)
     }
