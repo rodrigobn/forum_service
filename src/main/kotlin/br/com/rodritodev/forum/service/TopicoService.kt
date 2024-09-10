@@ -2,6 +2,7 @@ package br.com.rodritodev.forum.service
 
 import br.com.rodritodev.forum.dto.AtualizacaoTopicoForm
 import br.com.rodritodev.forum.dto.NovoTopicoForm
+import br.com.rodritodev.forum.dto.TopicoPorCategoria
 import br.com.rodritodev.forum.dto.TopicoView
 import br.com.rodritodev.forum.exception.NotFoundException
 import br.com.rodritodev.forum.mapper.TopicoFormMapper
@@ -81,5 +82,13 @@ class TopicoService(
             NotFoundException("Tópico não encontrado")
         }
         repository.deleteById(id)
+    }
+
+    /**
+     * Relatório de tópicos por categoria
+     * @return Lista de tópicos por categoria
+     */
+    fun relatorio(): List<TopicoPorCategoria> {
+        return repository.relatorio()
     }
 }
