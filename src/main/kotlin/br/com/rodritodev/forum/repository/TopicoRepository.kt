@@ -36,6 +36,10 @@ interface TopicoRepository: JpaRepository<Topico, Long>{
     @Query("SELECT new br.com.rodritodev.forum.dto.TopicoPorCategoria(curso.nome, count(t)) FROM Topico t JOIN t.curso curso GROUP BY curso.categoria")
     fun relatorio(): List<TopicoPorCategoria>
 
-    @Query("select t from Topico t where t.respostas is empty")
-    fun topicosNaoRespondidos(): List<Topico>
+    /**
+     * Busca tópicos sem respostas
+     * @return Lista de tópicos encontrados
+     */
+//    @Query("SELECT t FROM Topico t WHERE t.respostas IS EMPTY")
+//    fun topicosNaoRespondidos(): List<Topico>
 }
