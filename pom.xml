@@ -10,9 +10,9 @@
 	</parent>
 	<groupId>br.com.rodritodev</groupId>
 	<artifactId>forum</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>forum</name>
-	<description>Demo project for Spring Boot</description>
+	<description>API RESTful para um fórum de perguntas e respostas.</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -83,6 +83,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 	</dependencies>
 

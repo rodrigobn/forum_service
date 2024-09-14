@@ -1,0 +1,7 @@
+CREATE TABLE role (
+    id bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL
+);
+
+INSERT INTO role (id, nome) VALUES (1, 'ROLE_ADMIN');
+INSERT INTO role (id, nome) VALUES (2, 'ROLE_USER');
