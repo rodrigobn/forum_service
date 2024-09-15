@@ -17,3 +17,8 @@ spring:
 logging:
   level:
     org.springframework.security: DEBUG
+
+security:
+  jwt:
+    expiration: 10000 # 10 segundos
+    secret: "chaveSecreta"
