@@ -20,5 +20,5 @@ logging:
 
 security:
   jwt:
-    expiration: 10000 # 10 segundos
+    expiration: 86400000 # 1 dia
     secret: "chaveSecreta"
