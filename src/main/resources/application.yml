@@ -17,3 +17,8 @@ spring:
 logging:
   level:
     org.springframework.security: DEBUG
+
+security:
+  jwt:
+    expiration: 86400000 # 1 dia
+    secret: "chaveSecreta"
