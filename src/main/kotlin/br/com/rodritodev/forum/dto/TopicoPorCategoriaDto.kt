@@ -1,6 +1,6 @@
 package br.com.rodritodev.forum.dto
 
-data class TopicoPorCategoria(
+data class TopicoPorCategoriaDto(
     val nomeCategoria: String,
     val quantidade: Long
 )

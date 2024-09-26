@@ -41,6 +41,9 @@ class JWTAuthenticationFilter(private val jwtUtil: JWTUtil) : OncePerRequestFilt
             }
             // Continua o processamento da requisição
             filterChain.doFilter(request, response)
+        } else {
+            // Não foi possível validar o token, então nega o acesso
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED)
         }
     }
 }

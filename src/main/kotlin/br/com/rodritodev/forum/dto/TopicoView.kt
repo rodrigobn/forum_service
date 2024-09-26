@@ -17,4 +17,5 @@ data class TopicoView(
     val status: StatusTopico,
     val dataCriacao: LocalDateTime,
     var respostas: List<RespostaView>,
+    val dataAlteracao: LocalDateTime?
 )

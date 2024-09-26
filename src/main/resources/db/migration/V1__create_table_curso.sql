@@ -61,4 +61,5 @@ insert into curso (id, nome, categoria) values (53, 'Catia', 'Engenharia');
 insert into curso (id, nome, categoria) values (54, 'Ansys', 'Engenharia');
 insert into curso (id, nome, categoria) values (55, 'Revit', 'Engenharia');
 
-ALTER TABLE curso ALTER COLUMN id RESTART WITH 56;
+-- Ajuste do auto incremento para o próximo valor desejado
+ALTER TABLE curso AUTO_INCREMENT = 56;
