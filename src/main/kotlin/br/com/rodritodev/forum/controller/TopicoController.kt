@@ -2,7 +2,7 @@ package br.com.rodritodev.forum.controller
 
 import br.com.rodritodev.forum.dto.AtualizacaoTopicoForm
 import br.com.rodritodev.forum.dto.NovoTopicoForm
-import br.com.rodritodev.forum.dto.TopicoPorCategoria
+import br.com.rodritodev.forum.dto.TopicoPorCategoriaDto
 import br.com.rodritodev.forum.dto.TopicoView
 import br.com.rodritodev.forum.service.TopicoService
 import jakarta.transaction.Transactional
@@ -91,7 +91,7 @@ class TopicoController(private val topicoService: TopicoService) {
      * @return Lista de tópicos por categoria
      */
     @GetMapping("/relatorio")
-    fun relatorio(): List<TopicoPorCategoria> {
+    fun relatorio(): List<TopicoPorCategoriaDto> {
         return topicoService.relatorio()
     }
 }

@@ -36,7 +36,7 @@ class JWTUtil(
      * @return Token JWT gerado.
      *
      */
-    fun gerarToken(username: String, authorities: MutableCollection<out GrantedAuthority>): String {
+    fun generateToken(username: String, authorities: MutableCollection<out GrantedAuthority>): String {
         val expirationInMillis = System.currentTimeMillis() + expirationTime.toLong()
 
         return Jwts.builder()

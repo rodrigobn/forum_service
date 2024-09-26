@@ -9,4 +9,5 @@ insert into usuario (id, nome, email, senha) values (1, 'Admin', 'admin@mail.com
 insert into usuario (id, nome, email, senha) values (2, 'Ciclano', 'ciclano@mail.com', '$2a$06$C26JaGb5korSUE7ecCBMFu1jxSuGZ9gLLrff0wlyT00tzt9iRHrei');
 insert into usuario (id, nome, email, senha) values (3, 'Beltrano', 'beltrano@mail.com', '$2a$06$C26JaGb5korSUE7ecCBMFu1jxSuGZ9gLLrff0wlyT00tzt9iRHrei');
 
-ALTER TABLE usuario ALTER COLUMN id RESTART WITH 4;
+-- Ajuste do auto incremento para o próximo valor desejado
+ALTER TABLE curso AUTO_INCREMENT = 4;

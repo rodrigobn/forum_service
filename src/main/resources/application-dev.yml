@@ -1,24 +1,27 @@
 spring:
   datasource:
-    driverClassName: org.h2.Driver
-    url: jdbc:h2:mem:forum
-    username: sa
-    password:
+    driverClassName: com.mysql.cj.jdbc.Driver # Driver de conexão com o banco de dados MySQL
+    url: jdbc:mysql://localhost:3306/forum # URL de conexão com o banco de dados MySQL chamado forum
+    username: root
+    password: root
+
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    open-in-view: false # Evita o problema de LazyInitializationException
     properties:
       hibernate:
-        show_sql: true
-        format_sql: true
-  h2:
-    console:
-      enabled: true
+        show_sql: true # Mostra o SQL gerado pelo Hibernate no console do servidor de aplicação
+        format_sql: true # Formata o SQL gerado pelo Hibernate no console do servidor de aplicação
+
+  flyway:
+    repair: true # Corrige a ordem das migrações caso haja alguma inconsistência no banco de dados
 
 logging:
   level:
-    org.springframework.security: DEBUG
+    org.springframework.security: DEBUG # Habilita o log de segurança do Spring Security
+    org.hibernate.SQL: DEBUG # Habilita o log de SQL do Hibernate
+    org.flywaydb: DEBUG # Habilita o log de migração do Flyway
 
 security:
   jwt:
-    expiration: 86400000 # 1 dia
+    expiration: 86400000 # 1 dia em milissegundos
     secret: "chaveSecreta"

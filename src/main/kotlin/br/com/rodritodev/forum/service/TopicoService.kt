@@ -2,7 +2,7 @@ package br.com.rodritodev.forum.service
 
 import br.com.rodritodev.forum.dto.AtualizacaoTopicoForm
 import br.com.rodritodev.forum.dto.NovoTopicoForm
-import br.com.rodritodev.forum.dto.TopicoPorCategoria
+import br.com.rodritodev.forum.dto.TopicoPorCategoriaDto
 import br.com.rodritodev.forum.dto.TopicoView
 import br.com.rodritodev.forum.exception.NotFoundException
 import br.com.rodritodev.forum.mapper.TopicoFormMapper
@@ -11,6 +11,7 @@ import br.com.rodritodev.forum.repository.TopicoRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 /**
  * Serviço de tópicos do fórum
@@ -68,6 +69,7 @@ class TopicoService(
         }
         topico.titulo = dto.titulo
         topico.mensagem = dto.mensagem
+        topico.dataAlteracao = LocalDateTime.now()
         repository.save(topico)
 
         return topicoViewMapper.map(topico)
@@ -88,7 +90,7 @@ class TopicoService(
      * Relatório de tópicos por categoria
      * @return Lista de tópicos por categoria
      */
-    fun relatorio(): List<TopicoPorCategoria> {
+    fun relatorio(): List<TopicoPorCategoriaDto> {
         return repository.relatorio()
     }
 }

@@ -1,6 +1,6 @@
 package br.com.rodritodev.forum.repository
 
-import br.com.rodritodev.forum.dto.TopicoPorCategoria
+import br.com.rodritodev.forum.dto.TopicoPorCategoriaDto
 import br.com.rodritodev.forum.model.Topico
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -33,8 +33,8 @@ interface TopicoRepository: JpaRepository<Topico, Long>{
      */
     fun findByMensagemContaining(mensagem: String, paginacao: Pageable): Page<Topico>
 
-    @Query("SELECT new br.com.rodritodev.forum.dto.TopicoPorCategoria(curso.nome, count(t)) FROM Topico t JOIN t.curso curso GROUP BY curso.categoria")
-    fun relatorio(): List<TopicoPorCategoria>
+    @Query("SELECT new br.com.rodritodev.forum.dto.TopicoPorCategoriaDto(curso.categoria, count(t)) FROM Topico t JOIN t.curso curso GROUP BY curso.categoria")
+    fun relatorio(): List<TopicoPorCategoriaDto>
 
     /**
      * Busca tópicos sem respostas
