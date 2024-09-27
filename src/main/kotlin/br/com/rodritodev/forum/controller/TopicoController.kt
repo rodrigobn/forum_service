@@ -28,6 +28,7 @@ class TopicoController(private val topicoService: TopicoService) {
      * @return Lista de tópicos
      */
     @GetMapping
+    @Transactional // Esta anotação é necessária para que o Spring consiga abrir e fechar a transação automaticamente ao executar o método
     fun listar(
         @RequestParam(required = false) nomeCurso: String?,
         @PageableDefault(size = 10, sort = ["titulo"], direction = Sort.Direction.DESC) paginacao: Pageable
@@ -41,6 +42,7 @@ class TopicoController(private val topicoService: TopicoService) {
      * @return Tópico encontrado
      */
     @GetMapping("/{id}")
+    @Transactional
     fun buscarPorId(@PathVariable id: Long): TopicoView {
         return topicoService.buscarPorId(id)
     }
@@ -91,6 +93,7 @@ class TopicoController(private val topicoService: TopicoService) {
      * @return Lista de tópicos por categoria
      */
     @GetMapping("/relatorio")
+    @Transactional
     fun relatorio(): List<TopicoPorCategoriaDto> {
         return topicoService.relatorio()
     }

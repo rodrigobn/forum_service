@@ -28,6 +28,7 @@ class CursoController(private val cursoService: CursoService) {
      */
     @GetMapping // Indica que o método responde a requisições GET
     @Cacheable("cursosEmCache") // Habilita o cache para a lista de cursos
+    @Transactional
     fun listar(
         @RequestParam(required = false) nomeCurso: String?, // Parâmetro opcional para filtrar por nome do curso
         @PageableDefault(size = 10, sort = ["nome"], direction = Sort.Direction.ASC) pageable: Pageable // Parâmetros de paginação
@@ -41,6 +42,7 @@ class CursoController(private val cursoService: CursoService) {
      * @return Curso encontrado
      */
     @GetMapping("/{id}")
+    @Transactional
     fun buscarPorId(@PathVariable id: Long): Curso {
         return cursoService.buscarPorId(id)
     }

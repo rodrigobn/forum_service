@@ -25,6 +25,7 @@ class RespostaController(private val respostaService: RespostaService) {
      * @return Lista de respostas
      */
     @GetMapping("/topico/{id}")
+    @Transactional
     fun listar(@PathVariable id: Long): List<RespostaView> {
         return respostaService.listar(id)
     }
