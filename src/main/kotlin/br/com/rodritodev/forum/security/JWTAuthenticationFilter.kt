@@ -29,6 +29,17 @@ class JWTAuthenticationFilter(private val jwtUtil: JWTUtil) : OncePerRequestFilt
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
+
+        // Ignorar requests para os recursos do Swagger e estáticos
+        val requestPath = request.requestURI
+        if (requestPath.startsWith("/swagger-ui") ||
+            requestPath.startsWith("/v3/api-docs") ||
+            requestPath.startsWith("/webjars")) {
+            filterChain.doFilter(request, response)
+            return
+        }
+
+        // Verifica se o cabeçalho Authorization está presente na requisição
         val authorizationHeader = request.getHeader("Authorization")
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
