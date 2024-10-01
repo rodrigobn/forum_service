@@ -44,11 +44,11 @@ class SecurityConfiguration(
             .addFilterBefore(JWTAuthenticationFilter(jwtUtil = jwtUtil), UsernamePasswordAuthenticationFilter().javaClass) // Adiciona o filtro de autenticação JWT antes de qualquer outro filtro de requisição
             .authorizeHttpRequests { authz ->
                 // Configura as autorizações de acesso aos endpoints da aplicação
+                authz.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**", "/webjars/**").permitAll() // Permite acesso sem autenticação ao Swagger e H2 Console
                 authz.requestMatchers(HttpMethod.POST, "/login").permitAll() // Permite acesso ao endpoint de login sem autenticação
                 authz.requestMatchers(HttpMethod.POST, "/usuarios/**").hasAuthority(Roles.ROLE_ADMIN.name) // Apenas ADMIN pode cadastrar usuários
                 authz.requestMatchers(HttpMethod.DELETE, "/usuarios/**").hasAuthority(Roles.ROLE_ADMIN.name) // Apenas ADMIN pode excluir usuários
                 authz.requestMatchers("/topicos/**").hasAuthority(Roles.ROLE_USER.name) // Apenas USUÁRIO pode acessar os tópicos
-                authz.requestMatchers("/h2-console/**").permitAll() // Permite acesso ao console do H2 sem autenticação
                 authz.anyRequest().authenticated() // Qualquer outra requisição precisa de autenticação
             }
             .sessionManagement { session ->
