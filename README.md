@@ -111,5 +111,5 @@ A API utiliza autenticação JWT. Você pode importar o arquivo JSON de requisi�
 
 Credenciais padrão para acesso:
 
-- **Usuário:** admin
-- **Senha:** admin
+- **Usuário:** admin@mail.com
+- **Senha:** 123456
