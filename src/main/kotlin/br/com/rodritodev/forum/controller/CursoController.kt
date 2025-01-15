@@ -2,6 +2,7 @@ package br.com.rodritodev.forum.controller
 
 import br.com.rodritodev.forum.model.Curso
 import br.com.rodritodev.forum.service.CursoService
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.transaction.Transactional
 import jakarta.validation.Valid
 import org.springframework.cache.annotation.CacheEvict
@@ -19,6 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder
  * Controlador de cursos do fórum
  */
 @RestController // Indica que a classe é um controlador REST
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping("/cursos") // Indica o caminho base para as requisições
 class CursoController(private val cursoService: CursoService) {
 

@@ -3,8 +3,12 @@ package br.com.rodritodev.forum.controller
 import br.com.rodritodev.forum.dto.AtualizacaoUsuarioForm
 import br.com.rodritodev.forum.dto.NovoUsuarioForm
 import br.com.rodritodev.forum.dto.UsuarioView
+import br.com.rodritodev.forum.model.Credentials
 import br.com.rodritodev.forum.model.Usuario
 import br.com.rodritodev.forum.service.UsuarioService
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.transaction.Transactional
 import jakarta.validation.Valid
 import org.springframework.cache.annotation.CacheEvict
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping("/usuarios")
 class UsuarioController(private val usuarioService: UsuarioService) {
 

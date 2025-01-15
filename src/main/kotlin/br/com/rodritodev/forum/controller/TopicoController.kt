@@ -5,6 +5,7 @@ import br.com.rodritodev.forum.dto.NovoTopicoForm
 import br.com.rodritodev.forum.dto.TopicoPorCategoriaDto
 import br.com.rodritodev.forum.dto.TopicoView
 import br.com.rodritodev.forum.service.TopicoService
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.transaction.Transactional
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
@@ -20,6 +21,7 @@ import org.springframework.web.util.UriComponentsBuilder
  * Controlador de tópicos do fórum
  */
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping("/topicos")
 class TopicoController(private val topicoService: TopicoService) {
 

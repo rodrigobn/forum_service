@@ -5,6 +5,7 @@ import br.com.rodritodev.forum.dto.NovaRespostaForm
 import br.com.rodritodev.forum.dto.RespostaView
 import br.com.rodritodev.forum.model.Resposta
 import br.com.rodritodev.forum.service.RespostaService
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.transaction.Transactional
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -16,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder
  * Controlador de respostas dos tópicos do fórum
  */
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping("/respostas")
 class RespostaController(private val respostaService: RespostaService) {
 
