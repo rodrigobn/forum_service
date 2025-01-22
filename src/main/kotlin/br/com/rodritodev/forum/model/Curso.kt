@@ -4,6 +4,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import java.io.Serializable
 
 /**
  * Modelo de um curso
@@ -15,4 +16,4 @@ data class Curso(
     val id: Long,
     var nome: String,
     var categoria: String,
-)
+) : Serializable

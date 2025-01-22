@@ -53,6 +53,7 @@ class JWTLoginFilter(private val authManager: AuthenticationManager, private val
         val user = (authResult.principal as UserDetails)
         val token = jwtUtil.generateToken(user.username, user.authorities)
         response.addHeader("Authorization", "Bearer $token")
+        response.addHeader("Authorization-only-token", token)
         response.addHeader("access-control-expose-headers", "Authorization")
         response.addHeader("Content-Type", "application/json")
     }

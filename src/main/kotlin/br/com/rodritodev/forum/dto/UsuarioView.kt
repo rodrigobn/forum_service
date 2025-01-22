@@ -1,5 +1,7 @@
 package br.com.rodritodev.forum.dto
 
+import java.io.Serializable
+
 /**
  * Visualização de um usuário
  *
@@ -10,4 +12,4 @@ data class UsuarioView(
     val nome: String,
     val email: String,
     val senha: String,
-)
+) : Serializable

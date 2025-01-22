@@ -1,5 +1,6 @@
 package br.com.rodritodev.forum.dto
 
+import java.io.Serializable
 import java.time.LocalDateTime
 
 /**
@@ -14,4 +15,4 @@ data class RespostaView(
     val nomeAutor: String,
     var tituloTopico: String,
     var solucao: Boolean,
-)
+) : Serializable

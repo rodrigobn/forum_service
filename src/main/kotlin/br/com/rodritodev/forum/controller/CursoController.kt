@@ -29,7 +29,7 @@ class CursoController(private val cursoService: CursoService) {
      * @return Lista de cursos
      */
     @GetMapping // Indica que o método responde a requisições GET
-    @Cacheable("cursosEmCache") // Habilita o cache para a lista de cursos
+    @Cacheable("cursosEmCache", key = "#root.method.name") // Habilita o cache para a lista de cursos
     @Transactional
     fun listar(
         @RequestParam(required = false) nomeCurso: String?, // Parâmetro opcional para filtrar por nome do curso

@@ -15,6 +15,12 @@ spring:
   flyway:
     repair: true # Corrige a ordem das migrações caso haja alguma inconsistência no banco de dados
 
+  cache:
+    type: redis # Habilita o uso do Redis como cache
+  redis:
+    host: localhost # Host do servidor Redis
+    port: 6379 # Porta do servidor Redis
+
 logging:
   level:
     org.springframework.security: DEBUG # Habilita o log de segurança do Spring Security

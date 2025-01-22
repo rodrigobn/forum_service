@@ -30,7 +30,7 @@ class UsuarioController(private val usuarioService: UsuarioService) {
      * @return Lista de usuários
      */
     @GetMapping
-    @Cacheable("usuariosEmCache") // Habilita o cache para a lista de usuários
+    @Cacheable("usuariosEmCache", key = "#root.method.name") // Habilita o cache para a lista de usuários
     fun listar(
         @RequestParam(required = false) nome: String?,
         @PageableDefault(size = 10, sort = ["nome"]) paginacao: Pageable
