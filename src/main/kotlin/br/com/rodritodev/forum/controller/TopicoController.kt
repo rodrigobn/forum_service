@@ -8,6 +8,8 @@ import br.com.rodritodev.forum.service.TopicoService
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.transaction.Transactional
 import jakarta.validation.Valid
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -31,6 +33,7 @@ class TopicoController(private val topicoService: TopicoService) {
      */
     @GetMapping
     @Transactional // Esta anotação é necessária para que o Spring consiga abrir e fechar a transação automaticamente ao executar o método
+    @Cacheable("topicosEmCache", key = "#root.method.name") // Habilita o cache para a lista de tópicos por nome do método
     fun listar(
         @RequestParam(required = false) nomeCurso: String?,
         @PageableDefault(size = 10, sort = ["titulo"], direction = Sort.Direction.DESC) paginacao: Pageable
@@ -56,6 +59,7 @@ class TopicoController(private val topicoService: TopicoService) {
      */
     @PostMapping
     @Transactional
+    @CacheEvict("topicosEmCache", allEntries = true) // Limpa o cache de tópicos ao cadastrar um novo tópico para que a lista seja atualizada com o novo tópico
     fun cadastrar(
         @RequestBody @Valid dto: NovoTopicoForm,
         uriBuider: UriComponentsBuilder
@@ -74,6 +78,7 @@ class TopicoController(private val topicoService: TopicoService) {
      */
     @PutMapping
     @Transactional
+    @CacheEvict("topicosEmCache", allEntries = true)
     fun atualizar(@RequestBody @Valid dto: AtualizacaoTopicoForm): ResponseEntity<TopicoView> {
         val topicoView = topicoService.atualizar(dto)
         return ResponseEntity.ok(topicoView)
@@ -86,6 +91,7 @@ class TopicoController(private val topicoService: TopicoService) {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
+    @CacheEvict("topicosEmCache", allEntries = true)
     fun deletar(@PathVariable id: Long) {
         topicoService.deletar(id)
     }

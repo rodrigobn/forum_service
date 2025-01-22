@@ -3,6 +3,7 @@ package br.com.rodritodev.forum.dto
 import br.com.rodritodev.forum.model.Resposta
 import br.com.rodritodev.forum.model.StatusTopico
 import jakarta.persistence.*
+import java.io.Serializable
 import java.time.LocalDateTime
 
 /**
@@ -18,4 +19,4 @@ data class TopicoView(
     val dataCriacao: LocalDateTime,
     var respostas: List<RespostaView>,
     val dataAlteracao: LocalDateTime?
-)
+) : Serializable

@@ -1,5 +1,6 @@
 package br.com.rodritodev.forum.dto
 
+import java.io.Serializable
 import java.time.LocalDateTime
 
 /**
@@ -11,4 +12,4 @@ data class ErrorView(
     val error: String,
     val message: String?,
     val path: String
-)
+) : Serializable
