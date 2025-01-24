@@ -19,6 +19,7 @@ class RespostaService(
     private val topicoRepository: TopicoRepository,
     private val respostaRepository: RespostaRepository,
     private var usuarioService: UsuarioService,
+    private val emailService: EmailService,
     private val respostaViewMapper: RespostaViewMapper,
 ) {
     /**
@@ -31,7 +32,7 @@ class RespostaService(
             NotFoundException("Tópico não encontrado")
         }
 
-        return topico.resposta.map { respostaViewMapper.map(it) }
+        return topico.respostas.map { respostaViewMapper.map(it) }
     }
 
     /**
@@ -58,7 +59,7 @@ class RespostaService(
         )
         val respostaSalva = respostaRepository.save(resposta)
 
-        topico.resposta = topico.resposta.plus(respostaSalva)
+        topico.respostas = topico.respostas.plus(respostaSalva)
         topicoRepository.save(topico)
 
         return respostaViewMapper.map(respostaSalva)
@@ -78,7 +79,7 @@ class RespostaService(
             throw Exception("Tópico não pode receber respostas pois está fechado")
         }
 
-        val respostaAtualizada = topico.resposta.firstOrNull { resposta ->
+        val respostaAtualizada = topico.respostas.firstOrNull { resposta ->
             resposta.id == atualizacaoRespostaForm.idResposta
         }
 
@@ -90,7 +91,7 @@ class RespostaService(
         respostaAtualizada.solucao = atualizacaoRespostaForm.solucao == true
         respostaAtualizada.topico = topico
 
-        topico.resposta = topico.resposta.minus(respostaAtualizada).plus(respostaAtualizada)
+        topico.respostas = topico.respostas.minus(respostaAtualizada).plus(respostaAtualizada)
 
         topicoRepository.save(topico)
 
@@ -112,7 +113,7 @@ class RespostaService(
             throw Exception("Tópico não pode receber respostas pois está fechado")
         }
 
-        val resposta = topico.resposta.find { it.id == idResposta }
+        val resposta = topico.respostas.find { it.id == idResposta }
 
         if (resposta == null) {
             throw Exception("Resposta ($idResposta) não encontrada")
@@ -138,7 +139,7 @@ class RespostaService(
             throw Exception("Tópico não pode receber respostas pois está fechado")
         }
 
-        val resposta = topico.resposta.find { it.id == idResposta }
+        val resposta = topico.respostas.find { it.id == idResposta }
 
         if (resposta == null) {
             throw Exception("Resposta ($idResposta) não encontrada")
@@ -163,15 +164,15 @@ class RespostaService(
             throw Exception("Tópico não pode receber respostas pois está fechado")
         }
 
-        if (topico.resposta.isEmpty()) {
+        if (topico.respostas.isEmpty()) {
             throw NotFoundException("Tópico ($idTopico) não possui respostas")
         }
 
-        if (topico.resposta.size == 1) {
+        if (topico.respostas.size == 1) {
             throw Exception("Tópico não pode ficar sem respostas")
         }
 
-        val resposta = topico.resposta.find { it.id == idResposta }
+        val resposta = topico.respostas.find { it.id == idResposta }
 
         if (resposta == null) {
             throw NotFoundException("Resposta não encontrada")
@@ -181,8 +182,16 @@ class RespostaService(
             throw Exception("Resposta marcada como solução não pode ser deletada")
         }
 
-        topico.resposta = topico.resposta.minus(resposta)
+        topico.respostas = topico.respostas.minus(resposta)
 
         topicoRepository.save(topico)
+
+        resposta.usuario?.let {
+            emailService.notificar(
+                destinatario = it.email,
+                assunto = "Resposta deletada",
+                corpo = "Sua resposta foi deletada do tópico ${topico.titulo}"
+            )
+        }
     }
 }

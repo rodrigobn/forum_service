@@ -15,11 +15,28 @@ spring:
   flyway:
     repair: true # Corrige a ordem das migrações caso haja alguma inconsistência no banco de dados
 
+  # Configuração de cache e Redis para armazenamento de cache de dados da aplicação
   cache:
     type: redis # Habilita o uso do Redis como cache
   redis:
     host: localhost # Host do servidor Redis
     port: 6379 # Porta do servidor Redis
+
+  # Configuração de envio de e-mail
+  mail:
+    host: sandbox.smtp.mailtrap.io # Host do servidor de e-mail
+    port: 2525 # Porta do servidor de e-mail
+    username: c4df735746d94f # Usuário do servidor de e-mail
+    password: 8d7092a8e3f7bd # Senha do servidor de e-mail
+    properties: # Propriedades do servidor de e-mail
+      mail:
+        transport:
+          protocol: smtp # Protocolo de envio de e-mail
+        debug: true # Habilita o log de envio de e-mail
+        smtp:
+          auth: true # Habilita a autenticação no servidor de e-mail
+          starttls:
+            enable: true # Habilita o uso do protocolo TLS
 
 logging:
   level:
