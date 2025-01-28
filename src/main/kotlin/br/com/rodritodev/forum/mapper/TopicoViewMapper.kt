@@ -26,7 +26,7 @@ class TopicoViewMapper(
             mensagem = t.mensagem,
             status = t.status,
             dataCriacao = t.dataCriacao,
-            respostas = t.resposta.map(respostaViewMapper::map).toList(),
+            respostas = t.respostas.map(respostaViewMapper::map).toList(),
             dataAlteracao = t.dataAlteracao
         )
     }

@@ -3,7 +3,6 @@ package br.com.rodritodev.forum.controller
 import br.com.rodritodev.forum.dto.AtualizacaoRespostaForm
 import br.com.rodritodev.forum.dto.NovaRespostaForm
 import br.com.rodritodev.forum.dto.RespostaView
-import br.com.rodritodev.forum.model.Resposta
 import br.com.rodritodev.forum.service.RespostaService
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.transaction.Transactional
@@ -30,7 +29,7 @@ class RespostaController(private val respostaService: RespostaService) {
      */
     @GetMapping("/topico/{id}")
     @Transactional
-    @Cacheable("respostasEmCache", key = "#root.method.name")
+    @Cacheable(value = ["respostasEmCache"], key = "#root.method.name")
     fun listar(@PathVariable id: Long): List<RespostaView> {
         return respostaService.listar(id)
     }
@@ -42,7 +41,7 @@ class RespostaController(private val respostaService: RespostaService) {
      */
     @PostMapping
     @Transactional
-    @CacheEvict(value = ["respostasEmCache"], allEntries = true)
+    @CacheEvict(value = ["respostasEmCache", "topicosEmCache"], allEntries = true)
     fun cadastrar(
         @RequestBody @Valid resposta: NovaRespostaForm,
         uriComponentsBuilder: UriComponentsBuilder
@@ -60,7 +59,7 @@ class RespostaController(private val respostaService: RespostaService) {
      */
     @PutMapping
     @Transactional
-    @CacheEvict(value = ["respostasEmCache"], allEntries = true)
+    @CacheEvict(value = ["respostasEmCache", "topicosEmCache"], allEntries = true)
     fun atualizar(@RequestBody @Valid atualizacaoRespostaForm: AtualizacaoRespostaForm): ResponseEntity<RespostaView> {
         val respostaView = respostaService.atualizar(atualizacaoRespostaForm)
         return ResponseEntity.ok(respostaView)
@@ -74,7 +73,7 @@ class RespostaController(private val respostaService: RespostaService) {
      */
     @PutMapping("topico/{idTopico}/solucao/{idResposta}")
     @Transactional
-    @CacheEvict(value = ["respostasEmCache"], allEntries = true)
+    @CacheEvict(value = ["respostasEmCache", "topicosEmCache"], allEntries = true)
     fun marcarComoSolucao(@PathVariable idTopico: Long, @PathVariable idResposta: Long): ResponseEntity<RespostaView> {
         val resposta = respostaService.marcarComoSolucao(idTopico, idResposta)
         return ResponseEntity.ok(resposta)
@@ -88,7 +87,7 @@ class RespostaController(private val respostaService: RespostaService) {
      */
     @DeleteMapping("topico/{idTopico}/remove/{idResposta}")
     @Transactional
-    @CacheEvict(value = ["respostasEmCache"], allEntries = true)
+    @CacheEvict(value = ["respostasEmCache", "topicosEmCache"], allEntries = true)
     fun removerSolucao(@PathVariable idTopico: Long, @PathVariable idResposta: Long): ResponseEntity<RespostaView> {
         val resposta = respostaService.removerSolucao(idTopico, idResposta)
         return ResponseEntity.ok(resposta)
@@ -101,7 +100,7 @@ class RespostaController(private val respostaService: RespostaService) {
     @DeleteMapping("/{idTopico}/{idResposta}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
-    @CacheEvict(value = ["respostasEmCache"], allEntries = true)
+    @CacheEvict(value = ["respostasEmCache", "topicosEmCache"], allEntries = true)
     fun deletar(@PathVariable idTopico: Long, @PathVariable idResposta: Long) {
         respostaService.deletar(idTopico, idResposta)
     }

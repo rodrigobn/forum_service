@@ -15,6 +15,28 @@ spring:
   flyway:
     repair: true # Corrige a ordem das migrações caso haja alguma inconsistência no banco de dados
 
+  cache:
+    type: redis # Habilita o uso do Redis como cache
+  redis:
+    host: localhost # Host do servidor Redis
+    port: 6379 # Porta do servidor Redis
+
+  # Configuração de envio de e-mail
+  mail:
+    host:  # Host do servidor de e-mail
+    port:  # Porta do servidor de e-mail
+    username:  # Usuário do servidor de e-mail
+    password:  # Senha do servidor de e-mail
+    properties: # Propriedades do servidor de e-mail
+      mail:
+        transport:
+          protocol: smtp # Protocolo de envio de e-mail
+        debug: true # Habilita o log de envio de e-mail
+        smtp:
+          auth: true # Habilita a autenticação no servidor de e-mail
+          starttls:
+            enable: true # Habilita o uso do protocolo TLS
+
 logging:
   level:
     org.springframework.security: DEBUG # Habilita o log de segurança do Spring Security

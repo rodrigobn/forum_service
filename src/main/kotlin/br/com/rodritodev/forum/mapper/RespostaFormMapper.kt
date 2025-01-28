@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component
  */
 @Component
 class RespostaFormMapper : Mapper<NovaRespostaForm, Resposta> {
-    override fun map(resposta: NovaRespostaForm): Resposta {
+    override fun map(t: NovaRespostaForm): Resposta {
         return Resposta(
-            mensagem = resposta.mensagem,
+            mensagem = t.mensagem,
             solucao = false,
         )
     }

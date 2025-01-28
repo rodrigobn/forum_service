@@ -18,7 +18,7 @@ object TopicoTest {
             roles = listOf(),
         ),
         status = StatusTopico.NAO_RESPONDIDO,
-        resposta = listOf(),
+        respostas = listOf(),
         dataAlteracao = null,
     )
 }
