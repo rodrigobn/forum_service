@@ -48,6 +48,7 @@ class SecurityConfiguration(
                 authz.requestMatchers(HttpMethod.POST, "/login").permitAll() // Permite acesso ao endpoint de login sem autenticação
                 authz.requestMatchers(HttpMethod.POST, "/usuarios/**").hasAuthority(Roles.ROLE_ADMIN.name) // Apenas ADMIN pode cadastrar usuários
                 authz.requestMatchers(HttpMethod.DELETE, "/usuarios/**").hasAuthority(Roles.ROLE_ADMIN.name) // Apenas ADMIN pode excluir usuários
+                authz.requestMatchers(HttpMethod.GET, "/relatorios").hasAuthority(Roles.ROLE_ADMIN.name) // Apenas ADMIN pode acessar o relatório
                 authz.requestMatchers("/topicos/**").hasAuthority(Roles.ROLE_USER.name) // Apenas USUÁRIO pode acessar os tópicos
                 authz.anyRequest().authenticated() // Qualquer outra requisição precisa de autenticação
             }
