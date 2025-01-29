@@ -19,7 +19,7 @@ jobs:
       - name: Set JDK
         uses: actions/setup-java@v1 # Ação que configura a versão do Java
         with:
-          java-version: '11' # Versão do Java
+          java-version: '17' # Versão do Java
 
       # Cache de dependências do Maven para acelerar o processo de build
       - name: Cache de deps
