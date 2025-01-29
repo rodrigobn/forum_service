@@ -1,0 +1,33 @@
+name: CI # Nome do workflow
+
+# Evento que dispara o workflow
+on:
+  push: # Dispara quando um commit é feito
+    branches: # Dispara apenas quando um commit é feito na branch master
+      - '*'
+
+# Trabalhos que serão executados
+jobs:
+  in-docker_test:
+    name: Testes automatizados # Nome do trabalho
+    runs-on: ubuntu-latest # Sistema operacional que será utilizado
+
+    steps:
+      - uses: actions/checkout@v1 # Ação que faz o checkout do código
+
+      # Configuração do ambiente Java
+      - name: Set JDK
+        uses: actions/setup-java@v1 # Ação que configura a versão do Java
+        with:
+          java-version: '11' # Versão do Java
+
+      # Cache de dependências do Maven para acelerar o processo de build
+      - name: Cache de deps
+        uses: actions/cache@v1 # Ação que faz cache das dependências
+        with:
+          path: ~/.m2 # Caminho onde as dependências serão armazenadas
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }} # Chave para identificar o cache
+          restore-keys: ${{ runner.os }}-m2 # Chave para restaurar o cache
+
+      - name: Executar testes
+        run: mvn -B test # Comando que executa os testes
