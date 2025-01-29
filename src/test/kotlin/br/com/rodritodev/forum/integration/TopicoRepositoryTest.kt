@@ -1,5 +1,6 @@
 package br.com.rodritodev.forum.integration
 
+import br.com.rodritodev.forum.configuration.DatabaseContainerConfiguration
 import br.com.rodritodev.forum.dto.TopicoPorCategoriaDto
 import br.com.rodritodev.forum.model.TopicoTest
 import br.com.rodritodev.forum.repository.TopicoRepository
@@ -19,7 +20,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 @SpringBootTest
 @Testcontainers // Essa anotação é usada para testes que utilizam containers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // Não substitui o banco de dados
-class TopicoRepositoryTest {
+class TopicoRepositoryTest : DatabaseContainerConfiguration() {
 
     // Injeta o repositório de tópicos
     @Autowired
