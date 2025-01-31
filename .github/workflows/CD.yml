@@ -1,0 +1,49 @@
+name: CD
+
+# Esse step informa que sempre que houver um push do repositório local para o remoto, a pipeline será deverá ser executada.
+on:
+  push:
+    branches:
+      - 'main'
+
+# Esse step informa que o job será executado em um ambiente Ubuntu.
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    # Esse step é responsável por executar as ações que serão realizadas no job.
+    steps:
+      - uses: actions/checkout@v1 # Ação que faz o checkout do código
+
+      - name: Set JDK
+        uses: actions/setup-java@v1 # Ação que configura a versão do Java
+        with:
+          java-version: '17'
+
+      - name: Cache de deps
+        uses: actions/cache@v1 # Ação que faz cache das dependências para acelerar o processo de build
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Run mvn clean
+        run: mvn clean # Comando que limpa o projeto antes de compilar novamente
+
+      - name: Run mvn package
+        run: mvn package # Comando que compila o projeto e gera o arquivo .jar que será utilizado para o deploy
+
+      - name: Login container registry
+        env:
+          RENDER_API_SECRET: ${{ secrets.RENDER_API_SECRET }}
+        run: heroku container:login # Comando que faz login no container registry do Heroku para fazer o push da imagem do container
+
+      - name: Push container registry
+        env:
+          RENDER_API_SECRET: ${{ secrets.RENDER_API_SECRET }}
+        run: heroku container:push -a ${{ secrets.HEROKU_APP_NAME }} web # Comando que faz o push da imagem do container para o container registry do Heroku
+
+      - name: Release container registry
+        env:
+          RENDER_API_SECRET: ${{ secrets.RENDER_API_SECRET }}
+        run: heroku container:release -a ${{ secrets.HEROKU_APP_NAME }} web # Comando que faz o release da imagem do container para o container registry do Heroku para que a aplicação seja atualizada

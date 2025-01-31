@@ -1,49 +1,49 @@
 spring:
   datasource:
-    driverClassName: com.mysql.cj.jdbc.Driver # Driver de conexão com o banco de dados MySQL
-    url: jdbc:mysql://mysql:3306/forum # URL de conexão com o banco de dados MySQL chamado forum
-    username: root
-    password: root
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: ${DATABASE_URL} # Via variável de ambiente
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
 
   jpa:
-    open-in-view: false # Evita o problema de LazyInitializationException
+    open-in-view: false
     properties:
       hibernate:
-        show_sql: true # Mostra o SQL gerado pelo Hibernate no console do servidor de aplicação
-        format_sql: true # Formata o SQL gerado pelo Hibernate no console do servidor de aplicação
+        show_sql: false # Desative em produção
+        format_sql: false
 
   flyway:
-    repair: true # Corrige a ordem das migrações caso haja alguma inconsistência no banco de dados
+    enabled: true
+    repair: true
 
   cache:
-    type: redis # Habilita o uso do Redis como cache
+    type: redis
   redis:
-    host: localhost # Host do servidor Redis
-    port: 6379 # Porta do servidor Redis
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
+    password: ${REDIS_PASSWORD}
 
-  # Configuração de envio de e-mail
   mail:
-    host:  # Host do servidor de e-mail
-    port:  # Porta do servidor de e-mail
-    username:  # Usuário do servidor de e-mail
-    password:  # Senha do servidor de e-mail
-    properties: # Propriedades do servidor de e-mail
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
       mail:
         transport:
-          protocol: smtp # Protocolo de envio de e-mail
-        debug: true # Habilita o log de envio de e-mail
+          protocol: smtp
         smtp:
-          auth: true # Habilita a autenticação no servidor de e-mail
+          auth: true
           starttls:
-            enable: true # Habilita o uso do protocolo TLS
+            enable: true
 
 logging:
   level:
-    org.springframework.security: DEBUG # Habilita o log de segurança do Spring Security
-    org.hibernate.SQL: DEBUG # Habilita o log de SQL do Hibernate
-    org.flywaydb: DEBUG # Habilita o log de migração do Flyway
+    org.springframework.security: INFO
+    org.hibernate.SQL: INFO
+    org.flywaydb: INFO
 
 security:
   jwt:
-    expiration: 86400000 # 1 dia em milissegundos
-    secret: "chaveSecreta"
+    expiration: 86400000
+    secret: "${JWT_SECRET}"
